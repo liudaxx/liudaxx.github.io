@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Your Thoughts</title>
+  <title>NettyԴ���Ķ��ʼǣ����� -- NioEventLoop | Your Thoughts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Your Thoughts">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="1.�����̴߳��������߳�ѡ�����͹���NioEventLoop1.0 ��������123456789101112131415161718192021222324252627282930//����һEventLoopGroup workerGroup = new NioEventLoopGroup();    //��û�д��빹������������ø��๹�췽��">
+<meta name="keywords" content="Netty,Դ��">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NettyԴ���Ķ��ʼǣ����� -- NioEventLoop">
+<meta property="og:url" content="http://yoursite.com/2019/02/27/Netty/netty02/index.html">
 <meta property="og:site_name" content="Your Thoughts">
+<meta property="og:description" content="1.�����̴߳��������߳�ѡ�����͹���NioEventLoop1.0 ��������123456789101112131415161718192021222324252627282930//����һEventLoopGroup workerGroup = new NioEventLoopGroup();    //��û�д��빹������������ø��๹�췽��">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-27T15:59:50.965Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Your Thoughts">
+<meta name="twitter:title" content="NettyԴ���Ķ��ʼǣ����� -- NioEventLoop">
+<meta name="twitter:description" content="1.�����̴߳��������߳�ѡ�����͹���NioEventLoop1.0 ��������123456789101112131415161718192021222324252627282930//����һEventLoopGroup workerGroup = new NioEventLoopGroup();    //��û�д��빹������������ø��๹�췽��">
   
     <link rel="alternative" href="/atom.xml" title="Your Thoughts" type="application/atom+xml">
   
@@ -136,106 +141,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-Netty/netty03" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-Netty/netty02" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/05/Netty/netty03/">NettyԴ���Ķ��ʼǣ����� --Netty���ӽ����߼�</a>
-    </h1>
-  
-
-        
-        <a href="/2019/03/05/Netty/netty03/" class="archive-article-date">
-  	<time datetime="2019-03-05T15:33:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Netty���ӽ����߼�"><a href="#Netty���ӽ����߼�" class="headerlink" title="Netty���ӽ����߼�"></a>Netty���ӽ����߼�</h1><p>������������boss�̵߳�NioEventLoop����boss�̻߳������accept�¼�����Ҫ��������ͼ��ʾ<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">���������--&gt;����NioSocketChannel</span><br><span class="line">����NioSocketChannel--&gt;�����̼߳�ע��selector</span><br><span class="line">�����̼߳�ע��selector--&gt;��selectorע����¼�</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//��NioEventLoop����ʱ��run()������</span><br><span class="line">NioEventLoop.run()</span><br><span class="line">    //select�����¼�</span><br><span class="line">    select();</span><br><span class="line">    //������������select����ͨ��</span><br><span class="line">    processSelectedKey(key,channel);</span><br><span class="line">        NioMessageUnsafe.read();</span><br><span class="line">            NioServerSocketChannel.doReadMessage();[ѭ����ȡ]</span><br><span class="line">                SocketChannel ch = javaChannel().accept();</span><br><span class="line">                //�����µ�Channel</span><br><span class="line">                new NioSocketChannel(this, ch);</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Դ��</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Netty//" class="article-tag-list-link color1">Netty</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/05/Netty/netty03/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Netty/netty02" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/27/Netty/netty02/">NettyԴ���Ķ��ʼǣ����� -- NioEventLoop</a>
+    <h1 class="article-title" itemprop="name">
+      NettyԴ���Ķ��ʼǣ����� -- NioEventLoop
     </h1>
   
 
@@ -425,16 +338,84 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/02/27/Netty/netty02/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/02/27/Netty/netty02/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2019/03/05/Netty/netty03/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          NettyԴ���Ķ��ʼǣ����� --Netty���ӽ����߼�
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/02/24/Netty/netty01/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Netty源码阅读笔记（一）</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -449,626 +430,43 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Netty/netty01" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/24/Netty/netty01/">Netty源码阅读笔记（一）</a>
-    </h1>
-  
-
-        
-        <a href="/2019/02/24/Netty/netty01/" class="archive-article-date">
-  	<time datetime="2019-02-24T15:39:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="服务端启动流程"><a href="#服务端启动流程" class="headerlink" title="服务端启动流程"></a>服务端启动流程</h1><p>整个服务端的创建通过ServerBootstrap.bind()绑定监听端口方法进入，从调用私有方法doBind(final SocketAddress localAddress)开始分析 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">AbstractBootstrap.doBind(final SocketAddress localAddress)</span><br><span class="line">    initAndRegister()初始化和注册方法</span><br><span class="line">        //通过反射工厂ReflectiveChannelFactory用反射利用为ServerBootstrap调用channel()方法设置的NioServerSocketChannel.class创建NioServerSocketChannel</span><br><span class="line">        channel = channelFactory.newChannel();</span><br><span class="line">        //实现该方法的类为ServerBootstrap，主要为服务端设置一些属性，最重要的还为pipeline添加服务端handler和连接器ServerBootstrapAcceptor，ServerBootstrapAcceptor会在新连接接入的时候将用户代码中设置的channelHandler设置到新连接中的pipeline中</span><br><span class="line">        init(channel);</span><br><span class="line">        //将JDK底层的Channel注册到select事件轮询器上面</span><br><span class="line">        ChannelFuture regFuture = config().group().register(channel);</span><br><span class="line">            //实际调用的方法</span><br><span class="line">            AbstractChannel.register(register);</span><br><span class="line">                //绑定线程</span><br><span class="line">                this.eventLoop=eventLoop;</span><br><span class="line">                //做实际的注册</span><br><span class="line">                register0();</span><br><span class="line">                    //调用jdk底层进行注册</span><br><span class="line">                    doRegister();</span><br><span class="line">                        //调用eventLoop的selector执行select方法监听事件，当然此时selector还没有注册感兴趣事件</span><br><span class="line">                        this.eventLoop().selectNow()</span><br><span class="line">                    invokeHandlerAddedIfNeeded();</span><br><span class="line">                    //传播注册事件</span><br><span class="line">                    fireChannelRegistered();</span><br><span class="line">    //该方法最终会调用AbstractChannel.AbstractUnsafe.bind();</span><br><span class="line">    doBind0(regFuture, channel, localAddress, promise);</span><br><span class="line">        AbstractUnsafe.bind();</span><br><span class="line">            doBind();</span><br><span class="line">                javaChannel().bind();</span><br><span class="line">            pipeline.fireChannelActive();</span><br><span class="line">                HeadContext.readIfIsAutoRead();</span><br><span class="line">``` </span><br><span class="line">&lt;!--more--&gt;</span><br><span class="line">### NioServerSocketChannel实例化过程</span><br><span class="line">进入NioServerSocketChannel的无惨构造方法</span><br><span class="line">socketChannelNioServerSocketChannel在实例化的时候，会 ==调用自身的newSocket()方法创建JDK的socketChannel==</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">public NioServerSocketChannel() &#123;</span><br><span class="line">    this(newSocket(DEFAULT_SELECTOR_PROVIDER));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static java.nio.channels.ServerSocketChannel newSocket(SelectorProvider provider) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        return provider.openServerSocketChannel();</span><br><span class="line">    &#125; catch (IOException var2) &#123;</span><br><span class="line">        throw new ChannelException(&quot;Failed to open a server socket.&quot;, var2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public NioServerSocketChannel(java.nio.channels.ServerSocketChannel channel) &#123;</span><br><span class="line">    //调用父类的构造器，传入JDK的Channel</span><br><span class="line">super((Channel)null, channel, 16);</span><br><span class="line">    this.config = new NioServerSocketChannel.NioServerSocketChannelConfig(this, this.javaChannel().socket());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>父类构造器继续传递给父类直到顶端：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">protected AbstractNioMessageChannel(Channel parent, SelectableChannel ch, int readInterestOp) &#123;</span><br><span class="line">    super(parent, ch, readInterestOp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected AbstractNioChannel(Channel parent, SelectableChannel ch, int readInterestOp) &#123;</span><br><span class="line">    super(parent);</span><br><span class="line">    this.ch = ch;</span><br><span class="line">    this.readInterestOp = readInterestOp;</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        //设置阻塞模式为false，如同在使用JDK的NIO那样</span><br><span class="line">        ch.configureBlocking(false);</span><br><span class="line">    &#125; catch (IOException var7) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            ch.close();</span><br><span class="line">        &#125; catch (IOException var6) &#123;</span><br><span class="line">            if (logger.isWarnEnabled()) &#123;</span><br><span class="line">                logger.warn(&quot;Failed to close a partially initialized socket.&quot;, var6);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        throw new ChannelException(&quot;Failed to enter non-blocking mode.&quot;, var7);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="初始化服务端Channel"><a href="#初始化服务端Channel" class="headerlink" title="初始化服务端Channel"></a>初始化服务端Channel</h3><p>ServerBootstrap的init方法，主要设置一些main方法中为ServerBootstrap设置的属性，顺便一提，这些基本属性保存在AbstractBootstrap中的<code>private final Map&lt;ChannelOption&lt;?&gt;, Object&gt; options = new LinkedHashMap&lt;ChannelOption&lt;?&gt;, Object&gt;();</code>当中<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(Channel channel)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//该方法获取AbstractBootstrap中的options,设置到channel中</span></span><br><span class="line">        <span class="keyword">final</span> Map&lt;ChannelOption&lt;?&gt;, Object&gt; options = options0();</span><br><span class="line">        <span class="keyword">synchronized</span> (options) &#123;</span><br><span class="line">            <span class="comment">//为channel设置选项</span></span><br><span class="line">            channel.config().setOptions(options);</span><br><span class="line">        &#125;</span><br><span class="line">         <span class="comment">//同理获得attr,设置到channel中</span></span><br><span class="line">        <span class="keyword">final</span> Map&lt;AttributeKey&lt;?&gt;, Object&gt; attrs = attrs0();</span><br><span class="line">        <span class="keyword">synchronized</span> (attrs) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Entry&lt;AttributeKey&lt;?&gt;, Object&gt; e: attrs.entrySet()) &#123;</span><br><span class="line">                <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">                AttributeKey&lt;Object&gt; key = (AttributeKey&lt;Object&gt;) e.getKey();</span><br><span class="line">                channel.attr(key).set(e.getValue());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        ChannelPipeline p = channel.pipeline();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> EventLoopGroup currentChildGroup = childGroup;</span><br><span class="line">        <span class="keyword">final</span> ChannelHandler currentChildHandler = childHandler;</span><br><span class="line">        <span class="keyword">final</span> Entry&lt;ChannelOption&lt;?&gt;, Object&gt;[] currentChildOptions;</span><br><span class="line">        <span class="keyword">final</span> Entry&lt;AttributeKey&lt;?&gt;, Object&gt;[] currentChildAttrs;</span><br><span class="line">        <span class="comment">//childOptions、childAttrs主要是为服务端channel接受的新连接设置的属性</span></span><br><span class="line">        <span class="keyword">synchronized</span> (childOptions) &#123;</span><br><span class="line">            currentChildOptions = childOptions.entrySet().toArray(newOptionArray(childOptions.size()));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">synchronized</span> (childAttrs) &#123;</span><br><span class="line">            currentChildAttrs = childAttrs.entrySet().toArray(newAttrArray(childAttrs.size()));</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        p.addLast(<span class="keyword">new</span> ChannelInitializer&lt;Channel&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(Channel ch)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                <span class="comment">//获取pipeline</span></span><br><span class="line">                <span class="keyword">final</span> ChannelPipeline pipeline = ch.pipeline();</span><br><span class="line">                <span class="comment">//获取为Bootstrap设置的handler</span></span><br><span class="line">                ChannelHandler handler = config.handler();</span><br><span class="line">                <span class="keyword">if</span> (handler != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    pipeline.addLast(handler);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// We add this handler via the EventLoop as the user may have used a ChannelInitializer as handler.</span></span><br><span class="line">                <span class="comment">// In this case the initChannel(...) method will only be called after this method returns. Because</span></span><br><span class="line">                <span class="comment">// of this we need to ensure we add our handler in a delayed fashion so all the users handler are</span></span><br><span class="line">                <span class="comment">// placed in front of the ServerBootstrapAcceptor.</span></span><br><span class="line">                ch.eventLoop().execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        pipeline.addLast(<span class="keyword">new</span> ServerBootstrapAcceptor(</span><br><span class="line">                                currentChildGroup, currentChildHandler, currentChildOptions, currentChildAttrs));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="注册Selector"><a href="#注册Selector" class="headerlink" title="注册Selector"></a>注册Selector</h3><p>将JDK底层的Channel注册到select事件轮询器上面，<strong>并把Netty的服务端Channel作为一个attachment绑定在JDK底层的服务端Channel</strong><br>ChannelFuture regFuture = this.config().group().register(channel);<br>该方法最终会调用到AbstractChannel.register(channel);<br>AbstractChannel.register(channel)最终会调用真正的注册Selector的方法doRegister()，该方法由子类实现，在本例中，它会最终调用AbstractNioChannel的实现：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(EventLoop eventLoop, <span class="keyword">final</span> ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (eventLoop == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"eventLoop"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (isRegistered()) &#123;</span><br><span class="line">        promise.setFailure(<span class="keyword">new</span> IllegalStateException(<span class="string">"registered to an event loop already"</span>));</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!isCompatible(eventLoop)) &#123;</span><br><span class="line">        promise.setFailure(</span><br><span class="line">                <span class="keyword">new</span> IllegalStateException(<span class="string">"incompatible event loop type: "</span> + eventLoop.getClass().getName()));</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//设置eventLoop</span></span><br><span class="line">    AbstractChannel.<span class="keyword">this</span>.eventLoop = eventLoop;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (eventLoop.inEventLoop()) &#123;</span><br><span class="line">        <span class="comment">//实际注册</span></span><br><span class="line">        register0(promise);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            eventLoop.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    register0(promise);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">            logger.warn(</span><br><span class="line">                    <span class="string">"Force-closing a channel whose registration task was not accepted by an event loop: &#123;&#125;"</span>,</span><br><span class="line">                    AbstractChannel.<span class="keyword">this</span>, t);</span><br><span class="line">            closeForcibly();</span><br><span class="line">            closeFuture.setClosed();</span><br><span class="line">            safeSetFailure(promise, t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">register0</span><span class="params">(ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// check if the channel is still open as it could be closed in the mean time when the register</span></span><br><span class="line">        <span class="comment">// call was outside of the eventLoop</span></span><br><span class="line">        <span class="keyword">if</span> (!promise.setUncancellable() || !ensureOpen(promise)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">boolean</span> firstRegistration = neverRegistered;</span><br><span class="line">        <span class="comment">//调用jdk底层进行注册</span></span><br><span class="line">        doRegister();</span><br><span class="line">        neverRegistered = <span class="keyword">false</span>;</span><br><span class="line">        registered = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Ensure we call handlerAdded(...) before we actually notify the promise. This is needed as the</span></span><br><span class="line">        <span class="comment">// user may already fire events through the pipeline in the ChannelFutureListener.</span></span><br><span class="line">        pipeline.invokeHandlerAddedIfNeeded();</span><br><span class="line"></span><br><span class="line">        safeSetSuccess(promise);</span><br><span class="line">        pipeline.fireChannelRegistered();</span><br><span class="line">        <span class="comment">// Only fire a channelActive if the channel has never been registered. This prevents firing</span></span><br><span class="line">        <span class="comment">// multiple channel actives if the channel is deregistered and re-registered.</span></span><br><span class="line">        <span class="keyword">if</span> (isActive()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (firstRegistration) &#123;</span><br><span class="line">                pipeline.fireChannelActive();</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (config().isAutoRead()) &#123;</span><br><span class="line">                <span class="comment">// This channel was registered before and autoRead() is set. This means we need to begin read</span></span><br><span class="line">                <span class="comment">// again so that we process inbound data.</span></span><br><span class="line">                <span class="comment">//</span></span><br><span class="line">                <span class="comment">// See https://github.com/netty/netty/issues/4805</span></span><br><span class="line">                beginRead();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        <span class="comment">// Close the channel directly to avoid FD leak.</span></span><br><span class="line">        closeForcibly();</span><br><span class="line">        closeFuture.setClosed();</span><br><span class="line">        safeSetFailure(promise, t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doRegister</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> selected = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//该行代码调用了JDK的Channel的register方法，并把自己作为attachment附近传递过去。</span></span><br><span class="line">            <span class="keyword">this</span>.selectionKey = <span class="keyword">this</span>.javaChannel().register(<span class="keyword">this</span>.eventLoop().selector, <span class="number">0</span>, <span class="keyword">this</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (CancelledKeyException var3) &#123;</span><br><span class="line">            <span class="keyword">if</span> (selected) &#123;</span><br><span class="line">                <span class="keyword">throw</span> var3;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//调用selector执行select方法</span></span><br><span class="line">            <span class="keyword">this</span>.eventLoop().selectNow();</span><br><span class="line">            selected = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//NioEventLoop.selectNow()</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">selectNow</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> selector.selectNow();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// restore wakup state if needed</span></span><br><span class="line">        <span class="keyword">if</span> (wakenUp.get()) &#123;</span><br><span class="line">            selector.wakeup();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="端口绑定"><a href="#端口绑定" class="headerlink" title="端口绑定"></a>端口绑定</h3><p>调用服务端JDK底层的API，实现对本地端口的监听<br>首先做一个JDK底层绑定，然后触发channelActive事件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(SocketAddress localAddress, ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.assertEventLoop();</span><br><span class="line">    <span class="keyword">if</span> (promise.setUncancellable() &amp;&amp; <span class="keyword">this</span>.ensureOpen(promise)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (Boolean.TRUE.equals(AbstractChannel.<span class="keyword">this</span>.config().getOption(ChannelOption.SO_BROADCAST)) &amp;&amp; localAddress <span class="keyword">instanceof</span> InetSocketAddress &amp;&amp; !((InetSocketAddress)localAddress).getAddress().isAnyLocalAddress() &amp;&amp; !PlatformDependent.isWindows() &amp;&amp; !PlatformDependent.isRoot()) &#123;</span><br><span class="line">            AbstractChannel.logger.warn(<span class="string">"A non-root user can't receive a broadcast packet if the socket is not bound to a wildcard address; binding to a non-wildcard address ("</span> + localAddress + <span class="string">") anyway as requested."</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">boolean</span> wasActive = AbstractChannel.<span class="keyword">this</span>.isActive();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//该方法最终调用子类实现的doBind()方法，本例中调用下例</span></span><br><span class="line">            AbstractChannel.<span class="keyword">this</span>.doBind(localAddress);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable var5) &#123;</span><br><span class="line">            <span class="keyword">this</span>.safeSetFailure(promise, var5);</span><br><span class="line">            <span class="keyword">this</span>.closeIfClosed();</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//绑定前非active并且绑定后为active</span></span><br><span class="line">        <span class="keyword">if</span> (!wasActive &amp;&amp; AbstractChannel.<span class="keyword">this</span>.isActive()) &#123;</span><br><span class="line">            <span class="keyword">this</span>.invokeLater(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    AbstractChannel.<span class="keyword">this</span>.pipeline.fireChannelActive();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.safeSetSuccess(promise);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> <span class="comment">//该方为上述方法中调用的AbstractChannel的子类NioServerSocketChannel的Bind()方</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doBind</span><span class="params">(SocketAddress localAddress)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (PlatformDependent.javaVersion() &gt;= <span class="number">7</span>) &#123;</span><br><span class="line">            </span><br><span class="line">            javaChannel().bind(localAddress, config.getBacklog());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            javaChannel().socket().bind(localAddress, config.getBacklog());</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//最终fireChannelActive()事件会调用AbstractNioChannel以下代码</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doBeginRead</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    SelectionKey selectionKey = <span class="keyword">this</span>.selectionKey;</span><br><span class="line">    <span class="keyword">if</span> (selectionKey.isValid()) &#123;</span><br><span class="line">        <span class="keyword">this</span>.readPending = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">int</span> interestOps = selectionKey.interestOps();</span><br><span class="line">        <span class="keyword">if</span> ((interestOps &amp; <span class="keyword">this</span>.readInterestOp) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">//注册感兴趣事件</span></span><br><span class="line">            selectionKey.interestOps(interestOps | <span class="keyword">this</span>.readInterestOp);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//该事件类型在NioServerSocketChannel构造时传递给父类</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">NioServerSocketChannel</span><span class="params">(java.nio.channels.ServerSocketChannel channel)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>((Channel)<span class="keyword">null</span>, channel, <span class="number">16</span>);</span><br><span class="line">    <span class="keyword">this</span>.config = <span class="keyword">new</span> NioServerSocketChannel.NioServerSocketChannelConfig(<span class="keyword">this</span>, <span class="keyword">this</span>.javaChannel().socket());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Netty//" class="article-tag-list-link color1">Netty</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/02/24/Netty/netty01/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-�����̴߳��������߳�ѡ�����͹���NioEventLoop"><span class="toc-number">1.</span> <span class="toc-text">1.�����̴߳��������߳�ѡ�����͹���NioEventLoop</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-0-��������"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.0 ��������</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2����NioEventLoop"><span class="toc-number">1.0.2.</span> <span class="toc-text">1.2����NioEventLoop</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-����NioEventLoop�߳�ѡ����"><span class="toc-number">1.0.3.</span> <span class="toc-text">1.3 ����NioEventLoop�߳�ѡ����</span></a></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#2-NioEventLoop��������"><span class="toc-number">2.</span> <span class="toc-text">2 NioEventLoop��������</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-����˰󶨶˿�����"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 ����˰󶨶˿�����</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-0-��������"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.0 ��������</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-SingleThreadEventExecutor-execute"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.1 SingleThreadEventExecutor.execute();</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-startThread"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.2 startThread()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-3-doStartThread"><span class="toc-number">2.1.4.</span> <span class="toc-text">2.1.3 doStartThread()</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-NioEventLoopִ���߼�"><span class="toc-number">3.</span> <span class="toc-text">3 NioEventLoopִ���߼�</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-0-����"><span class="toc-number">3.1.</span> <span class="toc-text">3.0 ����</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-��ڷ���run-����"><span class="toc-number">3.2.</span> <span class="toc-text">3.1 ��ڷ���run()����</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-select-����IO�¼��߼�"><span class="toc-number">3.3.</span> <span class="toc-text">3.2 select()����IO�¼��߼�</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-processSelectedKeys-����IO�¼��߼�"><span class="toc-number">3.4.</span> <span class="toc-text">3.3 processSelectedKeys()����IO�¼��߼�</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-1-selected-keySet�Z�"><span class="toc-number">3.4.1.</span> <span class="toc-text">3.3.1 selected keySet�Ż�</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-2-processSelectedKeysOptimized"><span class="toc-number">3.4.2.</span> <span class="toc-text">3.3.2 processSelectedKeysOptimized()</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-runAllTasks-ִ���߼�"><span class="toc-number">3.5.</span> <span class="toc-text">3.4 runAllTasks()ִ���߼�</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-0-����"><span class="toc-number">3.5.1.</span> <span class="toc-text">3.4.0 ����</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-1-task�������߼�����"><span class="toc-number">3.5.2.</span> <span class="toc-text">3.4.1 task�������߼�����</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-2-fetchFromScheduledTaskQueue-����lۺϷ���"><span class="toc-number">3.5.3.</span> <span class="toc-text">3.4.2 fetchFromScheduledTaskQueue()����ľۺϷ���</span></a></li></ol></li></ol></li>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
   
-    <article id="post-JVM/HotSpot_virtual_machine_object" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/17/JVM/HotSpot_virtual_machine_object/">HotSpot虚拟机对象探秘</a>
-    </h1>
   
-
-        
-        <a href="/2018/04/17/JVM/HotSpot_virtual_machine_object/" class="archive-article-date">
-  	<time datetime="2018-04-16T17:19:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/2018/04/17/JVM/HotSpot_virtual_machine_object/1ac09cc8775ff465e010e38017c7253c.png" alt="clipboard.png"></p>
-<p><strong>一、对象的创建</strong></p>
-<p>在语言层面上，创建对象（如克隆，反序列化）通常仅仅是一个new关键字而已，而在虚拟机中，对象（普通Java对象，不包括数组和Class对象）的创建过程如下：</p>
-<ol>
-<li><p>虚拟机首先去检查这个指令的参数是否能在<strong>常量池</strong>中定位到一个<strong>类的引用符号</strong>，并且检查该符号引用代表的类是否已经被加载、解析和初始化过。若没有则执行类加载过程</p>
-</li>
-<li><p>虚拟机为新生对象分配内存（对象所需内存大小在类加载的阶段便可以完全确定）</p>
-<p>(1)指针碰撞分配（Bump The Pointer）：堆内存是绝对规整的，用过的放一边，空闲的放另外一边，中间放一个指针作为分界点的指示器，每次分配内存就仅仅是把指针向空闲空间那边挪动一段与对象大小相等的距离。</p>
-<p>(2)空闲列表（Free List）：堆内存不是规整的，使用和未使用的内存相互交错，虚拟机维护一个列表，记录哪些内存可用和不可用</p>
-<p>(3)选择那种方法由Java堆是否规整决定，堆内存是否规整又根据垃圾收集器是否具有压缩整理功能决定。</p>
-</li>
-</ol>
-<p>3.内存分配完成后，虚拟机需要将分配到的内存空间都初始化为零值（不包括对象头）</p>
-<pre><code>(1)这一操作保证了对象的实例字段在Java代码中不赋初值就可以使用
-
-(2)如果使用TLAB，这一工作可以提前至TLAB分配时进行。
-</code></pre><p>4.虚拟机对对象进行必要的设置</p>
-<pre><code>如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的GC分代年龄等信息，这些信息存放在ObjectHeader之中
-</code></pre><p>上述步骤完成后，虚拟机视角的对象创建就完成了，但从Java程序的角度来看，对象创建才刚刚开始–\&lt;init>方法还没有执行，所有字段还都为零。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动内存管理机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/JVM//" class="article-tag-list-link color4">JVM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/17/JVM/HotSpot_virtual_machine_object/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql/mysql05_02" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/12/mysql/mysql05_02/">创建高性能的索引（二）</a>
-    </h1>
+  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+<script>
+  var cloudTieConfig = {
+    url: "http://yoursite.com/2019/02/27/Netty/netty02/", 
+    sourceId: "Netty/netty02",
+    productKey: "true",
+    target: "cloud-tie-wrapper"
+  };
+</script>
+<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
   
 
-        
-        <a href="/2018/04/12/mysql/mysql05_02/" class="archive-article-date">
-  	<time datetime="2018-04-12T14:46:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="5-3-高性能的索引策略"><a href="#5-3-高性能的索引策略" class="headerlink" title="5.3 高性能的索引策略"></a>5.3 高性能的索引策略</h2><h3 id="5-3-1-独立的列"><a href="#5-3-1-独立的列" class="headerlink" title="5.3.1 独立的列"></a>5.3.1 独立的列</h3><blockquote>
-<p>  独立的列指的是索引列<strong>不能是表达式的一部分</strong>，也<strong>不能是函数的参数</strong></p>
-</blockquote>
-<p><img src="/2018/04/12/mysql/mysql05_02/4d422bc26a78262f8390fc92f2f40bbb.png" alt><br></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">索引</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/12/mysql/mysql05_02/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql/mysql05_01" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/03/mysql/mysql05_01/">创建高性能的索引（一）</a>
-    </h1>
   
 
-        
-        <a href="/2018/04/03/mysql/mysql05_01/" class="archive-article-date">
-  	<time datetime="2018-04-02T16:35:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/2018/04/03/mysql/mysql05_01/20180417011343.png" alt></p>
-<h2 id="5-0-索引的数据结构"><a href="#5-0-索引的数据结构" class="headerlink" title="5.0 索引的数据结构"></a>5.0 索引的数据结构</h2><h3 id="平衡多路查找树（B-Tree）："><a href="#平衡多路查找树（B-Tree）：" class="headerlink" title="平衡多路查找树（B-Tree）："></a>平衡多路查找树（B-Tree）：</h3><blockquote>
-<p>  一棵m阶的B-Tree有如下特性： </p>
-</blockquote>
-<blockquote>
-<p>  每个节点最多有m个孩子。 </p>
-</blockquote>
-<blockquote>
-<p>  除了根节点和叶子节点外，其它每个节点至少有Ceil(m/2)个孩子。 </p>
-</blockquote>
-<blockquote>
-<p>  若根节点不是叶子节点，则至少有2个孩子 </p>
-</blockquote>
-<blockquote>
-<p>  所有叶子节点都在同一层，且不包含其它关键字信息 </p>
-</blockquote>
-<blockquote>
-<p>  每个非终端节点包含n个关键字信息（P0,P1,…Pn, k1,…kn） </p>
-</blockquote>
-<blockquote>
-<p>  关键字的个数n满足：ceil(m/2)-1 \&lt;= n \&lt;= m-1 </p>
-</blockquote>
-<blockquote>
-<p>  ki(i=1,…n)为关键字，且关键字升序排序。 </p>
-</blockquote>
-<blockquote>
-<p>  Pi(i=1,…n)为指向子树根节点的指针。P(i-1)指向的子树的所有节点关键字均小于ki，但都大于k(i-1)</p>
-</blockquote>
-<blockquote>
-<p>  B-Tree中的每个节点根据实际情况可以包含大量的关键字信息和分支，如下图所示为一个3阶的B-Tree： </p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">索引</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/03/mysql/mysql05_01/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql/mysql04" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/03/mysql/mysql04/">Schema与数据类型优化</a>
-    </h1>
   
 
-        
-        <a href="/2018/04/03/mysql/mysql04/" class="archive-article-date">
-  	<time datetime="2018-04-02T16:34:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="4-1-选择优化的数据类型"><a href="#4-1-选择优化的数据类型" class="headerlink" title="4.1 选择优化的数据类型"></a>4.1 选择优化的数据类型</h2><p><strong>更小的通常更好</strong>：</p>
-<blockquote>
-<p>  占用磁盘、内存、CPU缓存以及处理时需要的CUP周期更少</p>
-</blockquote>
-<p><strong>简单就好</strong>：</p>
-<blockquote>
-<p>  简单的数据类型的操作通常需要更少的CPU周期</p>
-</blockquote>
-<p><strong>尽量避免NULL</strong>：</p>
-<blockquote>
-<p>  可为NULL的列<em>使得索引、索引统计和值比较都更复杂</em>；会<em>使用更多的存储空间</em>，在MySQL里需要特殊处理；被索引时，<em>每个索引记录需要一个额外的字节</em>；在MyISAM里还会使固定大小的索引变成可变大小<strong>。</strong></p>
-</blockquote>
-<blockquote>
-<p>  <strong>如果在列上建索引，就应该避免设计成可为NULL的列</strong><br></p></blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据类型</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/03/mysql/mysql04/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql/mysql01" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/03/mysql/mysql01/">MySQL的架构与历史</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/03/mysql/mysql01/" class="archive-article-date">
-  	<time datetime="2018-04-02T16:33:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="1-1-Mysql逻辑架构"><a href="#1-1-Mysql逻辑架构" class="headerlink" title="1.1 Mysql逻辑架构"></a>1.1 Mysql逻辑架构</h2><p><img src="/2018/04/03/mysql/mysql01/f4743bd9ff5a9ba56067d86f088e1463.png" alt="clipboard.png"></p>
-<ul>
-<li><p>最上层的并不是Mysql独有，大多数基于C/S的工具或者服务都有类似的架构</p>
-</li>
-<li><p>第二层是大多数MySQL的<strong>核心服务功能</strong>。包括<strong>查询解析、分析、优化、缓存以及内置函数</strong>，<strong>所有跨存储引擎的功能都在这一层实现</strong>：存储过程、触发器、视图等</p>
-</li>
-<li><p>第三层包含了存储引擎、存储引擎<strong>负责MySQL中数据的存储与提取</strong>。服务器通过API与引擎进行通信，这些接口屏蔽了不同引擎的差异使得这些差异对上层的查询过程透明。存储引擎<strong>不会解析SQL</strong>，不同存储引擎<strong>也不会互相通信</strong>。</p>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">绪论</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/03/mysql/mysql01/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -1091,8 +489,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

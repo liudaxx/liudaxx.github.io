@@ -6,15 +6,30 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | Your Thoughts</title>
+  <title>NettyԴ���Ķ��ʼǣ����� --Netty���ӽ����߼� | Your Thoughts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Your Thoughts">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+  <meta name="description" content="Netty���ӽ����߼�������������boss�̵߳�NioEventLoop����boss�̻߳������accept�¼�����Ҫ��������ͼ��ʾ1234graph LR���������--&amp;gt;����NioSocketChannel����NioSocketChannel--&amp;gt;�����̼߳�ע��selector�����̼߳�ע��selecto">
+<meta name="keywords" content="Netty,Դ��">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NettyԴ���Ķ��ʼǣ����� --Netty���ӽ����߼�">
+<meta property="og:url" content="http://yoursite.com/2019/03/05/Netty/netty03/index.html">
 <meta property="og:site_name" content="Your Thoughts">
+<meta property="og:description" content="Netty���ӽ����߼�������������boss�̵߳�NioEventLoop����boss�̻߳������accept�¼�����Ҫ��������ͼ��ʾ1234graph LR���������--&amp;gt;����NioSocketChannel����NioSocketChannel--&amp;gt;�����̼߳�ע��selector�����̼߳�ע��selecto">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yuml.me/diagram/nofunky/class/
+[AbstractMessageChannel]++-1[NioMessageUnsafe],[AbstractMessageChannel]^-[NioServeSocketrChannel],[NioServeSocketrChannel]++-1[NioServeSocketrChannelConfig]">
+<meta property="og:image" content="http://yuml.me/diagram/nofunky/class/[<I>Channel]^-.-[NioSocketChannel],[<I>Channel]^-.-[AbstractChannel],[<I>Channel]^-.-[NioServeSocketrChannel]">
+<meta property="og:image" content="http://yuml.me/diagram/nofunky/class/[AbstractChannel]^-[AbstractNioChannel],
+[AbstractNioChannel]^-[AbstractMessageChannel],[AbstractMessageChannel]++-1[NioMessageUnsafe],[AbstractMessageChannel]^-[NioServeSocketrChannel],[NioServeSocketrChannel]++-1[NioServeSocketrChannelConfig],
+[AbstractNioChannel]^-[AbstractNioByteChannel],[AbstractNioByteChannel]++-1[NioByteUnsafe],[AbstractNioByteChannel]^-[NioSocketChannel],[NioSocketChannel]++-1[NioSocketChannelConfig]">
+<meta property="og:image" content="http://yuml.me/diagram/nofunky/class/
+[AbstractNioByteChannel]++-1[NioByteUnsafe],[AbstractNioByteChannel]^-[NioSocketChannel],[NioSocketChannel]++-1[NioSocketChannelConfig]">
+<meta property="og:updated_time" content="2019-03-05T15:33:38.071Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Your Thoughts">
+<meta name="twitter:title" content="NettyԴ���Ķ��ʼǣ����� --Netty���ӽ����߼�">
+<meta name="twitter:description" content="Netty���ӽ����߼�������������boss�̵߳�NioEventLoop����boss�̻߳������accept�¼�����Ҫ��������ͼ��ʾ1234graph LR���������--&amp;gt;����NioSocketChannel����NioSocketChannel--&amp;gt;�����̼߳�ע��selector�����̼߳�ע��selecto">
+<meta name="twitter:image" content="http://yuml.me/diagram/nofunky/class/
+[AbstractMessageChannel]++-1[NioMessageUnsafe],[AbstractMessageChannel]^-[NioServeSocketrChannel],[NioServeSocketrChannel]++-1[NioServeSocketrChannelConfig]">
   
     <link rel="alternative" href="/atom.xml" title="Your Thoughts" type="application/atom+xml">
   
@@ -136,287 +151,216 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Netty/netty03" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      NettyԴ���Ķ��ʼǣ����� --Netty���ӽ����߼�
+    </h1>
+  
+
+        
+        <a href="/2019/03/05/Netty/netty03/" class="archive-article-date">
+  	<time datetime="2019-03-05T15:33:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-05</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Netty���ӽ����߼�"><a href="#Netty���ӽ����߼�" class="headerlink" title="Netty���ӽ����߼�"></a>Netty���ӽ����߼�</h1><p>������������boss�̵߳�NioEventLoop����boss�̻߳������accept�¼�����Ҫ��������ͼ��ʾ<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">���������--&gt;����NioSocketChannel</span><br><span class="line">����NioSocketChannel--&gt;�����̼߳�ע��selector</span><br><span class="line">�����̼߳�ע��selector--&gt;��selectorע����¼�</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//��NioEventLoop����ʱ��run()������</span><br><span class="line">NioEventLoop.run()</span><br><span class="line">    //select�����¼�</span><br><span class="line">    select();</span><br><span class="line">    //������������select����ͨ��</span><br><span class="line">    processSelectedKey(key,channel);</span><br><span class="line">        NioMessageUnsafe.read();</span><br><span class="line">            NioServerSocketChannel.doReadMessage();[ѭ����ȡ]</span><br><span class="line">                SocketChannel ch = javaChannel().accept();</span><br><span class="line">                //�����µ�Channel</span><br><span class="line">                new NioSocketChannel(this, ch);</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="�����Ӽ��"><a href="#�����Ӽ��" class="headerlink" title="�����Ӽ��"></a>�����Ӽ��</h2><h3 id="NioEventLoop-processSelectedKey-key-channel-���"><a href="#NioEventLoop-processSelectedKey-key-channel-���" class="headerlink" title="NioEventLoop.processSelectedKey(key,channel)���"></a>NioEventLoop.processSelectedKey(key,channel)���</h3><p>�������̳�ͼ<br><img src="http://yuml.me/diagram/nofunky/class/
+[AbstractMessageChannel]++-1[NioMessageUnsafe],[AbstractMessageChannel]^-[NioServeSocketrChannel],[NioServeSocketrChannel]++-1[NioServeSocketrChannelConfig]"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">private void processSelectedKey(SelectionKey k, AbstractNioChannel ch) &#123;</span><br><span class="line">    NioUnsafe unsafe = ch.unsafe();</span><br><span class="line">    if (!k.isValid()) &#123;</span><br><span class="line">        NioEventLoop eventLoop;</span><br><span class="line">        try &#123;</span><br><span class="line">            eventLoop = ch.eventLoop();</span><br><span class="line">        &#125; catch (Throwable var6) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (eventLoop == this &amp;&amp; eventLoop != null) &#123;</span><br><span class="line">            unsafe.close(unsafe.voidPromise());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            int readyOps = k.readyOps();</span><br><span class="line">            if ((readyOps &amp; 8) != 0) &#123;</span><br><span class="line">                int ops = k.interestOps();</span><br><span class="line">                ops &amp;= -9;</span><br><span class="line">                k.interestOps(ops);</span><br><span class="line">                unsafe.finishConnect();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            if ((readyOps &amp; 4) != 0) &#123;</span><br><span class="line">                ch.unsafe().forceFlush();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            if ((readyOps &amp; 17) != 0 || readyOps == 0) &#123;</span><br><span class="line">                //����unsafe</span><br><span class="line">                unsafe.read();</span><br><span class="line">                if (!ch.isOpen()) &#123;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (CancelledKeyException var7) &#123;</span><br><span class="line">            unsafe.close(unsafe.voidPromise());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>unsafe.read()��NioMessageUnsafe.read()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"> public void read() &#123;</span><br><span class="line">        assert AbstractNioMessageChannel.this.eventLoop().inEventLoop();</span><br><span class="line"></span><br><span class="line">        ChannelConfig config = AbstractNioMessageChannel.this.config();</span><br><span class="line">        ChannelPipeline pipeline = AbstractNioMessageChannel.this.pipeline();</span><br><span class="line">        Handle allocHandle = AbstractNioMessageChannel.this.unsafe().recvBufAllocHandle();</span><br><span class="line">        //���ƶ�������</span><br><span class="line">        allocHandle.reset(config);</span><br><span class="line">        boolean closed = false;</span><br><span class="line">        Throwable exception = null;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            int localRead;</span><br><span class="line">            try &#123;</span><br><span class="line">                do &#123;</span><br><span class="line">                    //����һ��Object���͵�List�����ڴ���½����Channel</span><br><span class="line">                    localRead = AbstractNioMessageChannel.this.doReadMessages(this.readBuf);</span><br><span class="line">                    if (localRead == 0) &#123;</span><br><span class="line">                        break;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    if (localRead &lt; 0) &#123;</span><br><span class="line">                        closed = true;</span><br><span class="line">                        break;</span><br><span class="line">                    &#125;</span><br><span class="line">                    //���Ӽ���</span><br><span class="line">                    allocHandle.incMessagesRead(localRead);</span><br><span class="line">                    </span><br><span class="line">                &#125;</span><br><span class="line">                //Ĭ�������һ���Զ���16������</span><br><span class="line">                while(allocHandle.continueReading());</span><br><span class="line">            &#125; catch (Throwable var11) &#123;</span><br><span class="line">                exception = var11;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            localRead = this.readBuf.size();</span><br><span class="line">            //��ÿһ���xȡ����Channel��pipeline����һ���x�¼�</span><br><span class="line">            for(int i = 0; i &lt; localRead; ++i) &#123;</span><br><span class="line">                AbstractNioMessageChannel.this.readPending = false;</span><br><span class="line">                pipeline.fireChannelRead(this.readBuf.get(i));</span><br><span class="line">            &#125;</span><br><span class="line">            //������</span><br><span class="line">            this.readBuf.clear();</span><br><span class="line">            </span><br><span class="line">            allocHandle.readComplete();</span><br><span class="line">            //�x������¼�����</span><br><span class="line">            pipeline.fireChannelReadComplete();</span><br><span class="line">            if (exception != null) &#123;</span><br><span class="line">                closed = AbstractNioMessageChannel.this.closeOnReadError(exception);</span><br><span class="line">                pipeline.fireExceptionCaught(exception);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            if (closed) &#123;</span><br><span class="line">                AbstractNioMessageChannel.this.inputShutdown = true;</span><br><span class="line">                if (AbstractNioMessageChannel.this.isOpen()) &#123;</span><br><span class="line">                    this.close(this.voidPromise());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            if (!AbstractNioMessageChannel.this.readPending &amp;&amp; !config.isAutoRead()) &#123;</span><br><span class="line">                this.removeReadOp();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>NioServerSocketChannel.doReadMessages</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">protected int doReadMessages(List&lt;Object&gt; buf) throws Exception &#123;</span><br><span class="line">    //��ȡ�����ӵ�Channel</span><br><span class="line">    SocketChannel ch = this.javaChannel().accept();</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        if (ch != null) &#123;</span><br><span class="line">            //��װ��Netty��Channel�����뵽������</span><br><span class="line">            buf.add(new NioSocketChannel(this, ch));</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (Throwable var6) &#123;</span><br><span class="line">        logger.warn(&quot;Failed to create a new channel from an accepted socket.&quot;, var6);</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            ch.close();</span><br><span class="line">        &#125; catch (Throwable var5) &#123;</span><br><span class="line">            logger.warn(&quot;Failed to close a socket.&quot;, var5);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="�����ӵ�NioSocketChannel�J���"><a href="#�����ӵ�NioSocketChannel�J���" class="headerlink" title="�����ӵ�NioSocketChannel�Ĵ���"></a>�����ӵ�NioSocketChannel�Ĵ���</h3><h4 id="�����-��"><a href="#�����-��" class="headerlink" title="�����^��"></a>�����^��</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//���</span><br><span class="line">new NioSocketChannel(parent,ch);</span><br><span class="line">    AbstractNioByteChannel(p,ch,op_read);</span><br><span class="line">        configureBlocking(false)&amp;save op</span><br><span class="line">        create id,unsafe,pipeline</span><br><span class="line">    new NioSocketChannelConfig()</span><br><span class="line">        setTcpNoDelay(true)</span><br></pre></td></tr></table></figure>
+<h4 id="newNiSocketChannel-���"><a href="#newNiSocketChannel-���" class="headerlink" title="newNiSocketChannel()���"></a>newNiSocketChannel()���</h4><p>NioServerSocketChannel.doReadMessages.new NioSocketChannel(this, ch)<br>����������NioServerSocketChannel��Ϊ��������봴���˿ͻ���Channel</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public NioSocketChannel(Channel parent, SocketChannel socket) &#123;</span><br><span class="line">    super(parent, socket);</span><br><span class="line">    //setTcpNoDelay(true)</span><br><span class="line">    config = new NioSocketChannelConfig(this, socket.socket());</span><br><span class="line">&#125;</span><br><span class="line">//AbstractNioByteChannel()</span><br><span class="line">protected AbstractNioByteChannel(Channel parent, SelectableChannel ch) &#123;</span><br><span class="line">    //SelectionKey.OP_READΪ�ͻ���Channel��read�¼�����������󶨵�select��</span><br><span class="line">    super(parent, ch, SelectionKey.OP_READ);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//AbstractNioChannel()</span><br><span class="line">protected AbstractNioChannel(Channel parent, SelectableChannel ch, int readInterestOp) &#123;</span><br><span class="line">    super(parent);</span><br><span class="line">    this.ch = ch;</span><br><span class="line">    this.readInterestOp = readInterestOp;</span><br><span class="line">    try &#123;</span><br><span class="line">        ch.configureBlocking(false);</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            ch.close();</span><br><span class="line">        &#125; catch (IOException e2) &#123;</span><br><span class="line">            if (logger.isWarnEnabled()) &#123;</span><br><span class="line">                logger.warn(</span><br><span class="line">                        &quot;Failed to close a partially initialized socket.&quot;, e2);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        throw new ChannelException(&quot;Failed to enter non-blocking mode.&quot;, e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//AbstractChannel()</span><br><span class="line">protected AbstractChannel(Channel parent) &#123;</span><br><span class="line">    this.parent = parent;</span><br><span class="line">    id = newId();</span><br><span class="line">    unsafe = newUnsafe();</span><br><span class="line">    //ѭ������ÿ�����ӣ��������÷���˵�pipeline��read�¼�</span><br><span class="line">    pipeline = newChannelPipeline();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="������NioEventLoop�k����selectorע��"><a href="#������NioEventLoop�k����selectorע��" class="headerlink" title="������NioEventLoop�ķ����selectorע��"></a>������NioEventLoop�ķ����selectorע��</h3><h4 id="�����pipeline�L���"><a href="#�����pipeline�L���" class="headerlink" title="�����pipeline�Ĺ���"></a>�����pipeline�Ĺ���</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">Head--&gt;ServerBootstrapAcceptor</span><br><span class="line">ServerBootstrapAcceptor--&gt;Tail</span><br></pre></td></tr></table></figure>
+<p>ÿ���½�������Ӷ���ͨ������˵�pipeline��ͨ�������select�¼�֮���pipeline.fireChannelRead(this.readBuf.get(i))���յ���ServerBootstrapAcceptor����������ChannelHander��channelRead����</p>
+<h4 id="ServerBootstrapAcceptor-channelRead-���"><a href="#ServerBootstrapAcceptor-channelRead-���" class="headerlink" title="ServerBootstrapAcceptor.channelRead()���"></a>ServerBootstrapAcceptor.channelRead()���</h4><ol>
+<li>����childHandler</li>
+<li>����options��attrs</li>
+<li>ѡ��NioEventLoop��ע��selector</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">public void channelRead(ChannelHandlerContext ctx, Object msg) &#123;</span><br><span class="line">    final Channel child = (Channel) msg;</span><br><span class="line">    //���û�����һ��ʼ����childHandler�е�new ChannelInitializer()�н��Զ����ChildHandler������ͻ��������ӵ�Pipeline�У�ChannelInitializer�&#123;����������initChannel()����֮������Լ���pipeline�Єh��</span><br><span class="line">    //�Ӵ˴���ֱ�ӽ��������pipeline�е�2�ڵķ���</span><br><span class="line">    child.pipeline().addLast(childHandler);</span><br><span class="line">    //�õ�ChannelConfig,���û����õ�option�����������ã�����attrs�Զ������԰󶨵�Channel��</span><br><span class="line">    //childOptions��Ҫ�cTCP�׌��x�����P�ą���</span><br><span class="line">    for (Entry&lt;ChannelOption&lt;?&gt;, Object&gt; e: childOptions) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            if (!child.config().setOption((ChannelOption&lt;Object&gt;) e.getKey(), e.getValue())) &#123;</span><br><span class="line">                logger.warn(&quot;Unknown channel option: &quot; + e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (Throwable t) &#123;</span><br><span class="line">            logger.warn(&quot;Failed to set a channel option: &quot; + child, t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //childAttrs��Ҫ�Ǡ����ڿ͑���Channel���潉��һЩ�Զ��x�Č���</span><br><span class="line">    for (Entry&lt;AttributeKey&lt;?&gt;, Object&gt; e: childAttrs) &#123;</span><br><span class="line">        child.attr((AttributeKey&lt;Object&gt;) e.getKey()).set(e.getValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        //childGroup��NioEventLoopGroup workGroup���������Q��</span><br><span class="line">        //register()�����Е������x�����ҵ�һ��NioEventLoop���K�M��������ע�Բ���</span><br><span class="line">        childGroup.register(child).addListener(new ChannelFutureListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void operationComplete(ChannelFuture future) throws Exception &#123;</span><br><span class="line">                if (!future.isSuccess()) &#123;</span><br><span class="line">                    forceClose(child, future.cause());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125; catch (Throwable t) &#123;</span><br><span class="line">        forceClose(child, t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="ChannelInitializer����"><a href="#ChannelInitializer����" class="headerlink" title="ChannelInitializer����"></a>ChannelInitializer����</h4><p>��ChannelInitializer�����ӵ��ͻ������ӵ�pipeline�󣬻����ChannelInitialize.handlerAdded()�Ļص� </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public void handlerAdded(ChannelHandlerContext ctx) throws Exception &#123;</span><br><span class="line">    if (ctx.channel().isRegistered()) &#123;</span><br><span class="line">        // This should always be true with our current DefaultChannelPipeline implementation.</span><br><span class="line">        // The good thing about calling initChannel(...) in handlerAdded(...) is that there will be no ordering</span><br><span class="line">        // suprises if a ChannelInitializer will add another ChannelInitializer. This is as all handlers</span><br><span class="line">        // will be added in the expected order.</span><br><span class="line">       </span><br><span class="line">        initChannel(ctx);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">private boolean initChannel(ChannelHandlerContext ctx) throws Exception &#123;</span><br><span class="line">    if (initMap.putIfAbsent(ctx, Boolean.TRUE) == null) &#123; // Guard against re-entrance.</span><br><span class="line">        try &#123;</span><br><span class="line">            // //���øó��󷽷����÷�����ʵ����main�����У�Ϊ�����ӿͻ��˵�pipeline�����Զ����ChannelHandler</span><br><span class="line">            initChannel((C) ctx.channel());</span><br><span class="line">        &#125; catch (Throwable cause) &#123;</span><br><span class="line">            // Explicitly call exceptionCaught(...) as we removed the handler before calling initChannel(...).</span><br><span class="line">            // We do so to prevent multiple calls to initChannel(...).</span><br><span class="line">            exceptionCaught(ctx, cause);</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            //���ý�����,�Ƴ���channelHandler����</span><br><span class="line">            remove(ctx);</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void remove(ChannelHandlerContext ctx) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        ChannelPipeline pipeline = ctx.pipeline();</span><br><span class="line">        if (pipeline.context(this) != null) &#123;</span><br><span class="line">            pipeline.remove(this);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        initMap.remove(ctx);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="�͑���Channelѡ��NioEventLoop��ע��selector�-��Ԕ��"><a href="#�͑���Channelѡ��NioEventLoop��ע��selector�-��Ԕ��" class="headerlink" title="�͑���Channelѡ��NioEventLoop��ע��selector�^��Ԕ��"></a>�͑���Channelѡ��NioEventLoop��ע��selector�^��Ԕ��</h4><p>��ڷ�����<strong>childGroup.register(child)</strong><br>�����x��������һ��NioEventLoop�^��<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">MultithreadEventLoopGroup����NioEventLoopGroup���</span><br><span class="line">public ChannelFuture register(Channel channel) &#123;</span><br><span class="line">    //next��������</span><br><span class="line">    return next().register(channel);</span><br><span class="line">&#125;</span><br><span class="line">//MultithreadEventLoopGroup.next()</span><br><span class="line">public EventLoop next() &#123;</span><br><span class="line">    return (EventLoop) super.next();</span><br><span class="line">&#125;</span><br><span class="line">//MultithreadEventExecutorGroup.next()</span><br><span class="line">public EventExecutor next() &#123;</span><br><span class="line">    //�&#123;���x�����x�����һ��EventLoop����</span><br><span class="line">    return chooser.next();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>����register()�^��<br>��ڷ�����<strong>next().register(channel);</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line">//SingleThreadEventLoop.register</span><br><span class="line">public ChannelFuture register(Channel channel) &#123;</span><br><span class="line">    </span><br><span class="line">    return register(new DefaultChannelPromise(channel, this));</span><br><span class="line">&#125;</span><br><span class="line">//SingleThreadEventLoop</span><br><span class="line">public ChannelFuture register(final ChannelPromise promise) &#123;</span><br><span class="line">    ObjectUtil.checkNotNull(promise, &quot;promise&quot;);</span><br><span class="line">    promise.channel().unsafe().register(this, promise);</span><br><span class="line">    return promise;</span><br><span class="line">&#125;</span><br><span class="line">//promise.channel().unsafe().register(this, promise);unsafe�ǿ͑��˵�NioByteUnsafe��ԓ��&#123;�ø��AbstractChannel�Ĳ���׃�ķ���register</span><br><span class="line">//AbstractChannel</span><br><span class="line">public final void register(EventLoop eventLoop, final ChannelPromise promise) &#123;</span><br><span class="line">    if (eventLoop == null) &#123;</span><br><span class="line">        throw new NullPointerException(&quot;eventLoop&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if (isRegistered()) &#123;</span><br><span class="line">        promise.setFailure(new IllegalStateException(&quot;registered to an event loop already&quot;));</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    if (!isCompatible(eventLoop)) &#123;</span><br><span class="line">        promise.setFailure(</span><br><span class="line">                new IllegalStateException(&quot;incompatible event loop type: &quot; + eventLoop.getClass().getName()));</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    //���x�񵽵�eventLoop�������͑���CHannel��</span><br><span class="line">    AbstractChannel.this.eventLoop = eventLoop;</span><br><span class="line">    //��춰l��Q����boss�Q�̣��ʷ���false�M��else�Z��</span><br><span class="line">    if (eventLoop.inEventLoop()) &#123;</span><br><span class="line">        register0(promise);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        try &#123;  </span><br><span class="line">            //��ע���΄�����һ��task���f��NioEventLoop�����Q����,�S��׌���ԄӴٰl����</span><br><span class="line">            eventLoop.execute(new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    //�&#123;������ע�Է���</span><br><span class="line">                    register0(promise);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125; catch (Throwable t) &#123;</span><br><span class="line">            logger.warn(</span><br><span class="line">                    &quot;Force-closing a channel whose registration task was not accepted by an event loop: &#123;&#125;&quot;,</span><br><span class="line">                    AbstractChannel.this, t);</span><br><span class="line">            closeForcibly();</span><br><span class="line">            closeFuture.setClosed();</span><br><span class="line">            safeSetFailure(promise, t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void register0(ChannelPromise promise) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        // check if the channel is still open as it could be closed in the mean time when the register</span><br><span class="line">        // call was outside of the eventLoop</span><br><span class="line">        if (!promise.setUncancellable() || !ensureOpen(promise)) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        boolean firstRegistration = neverRegistered;</span><br><span class="line">        //�&#123;��ע�Ե�selector�ϣ����Ҳ�ע���κθ��dȤ�¼�</span><br><span class="line">        doRegister();</span><br><span class="line">        neverRegistered = false;</span><br><span class="line">        registered = true;</span><br><span class="line"></span><br><span class="line">        // Ensure we call handlerAdded(...) before we actually notify the promise. This is needed as the</span><br><span class="line">        // user may already fire events through the pipeline in the ChannelFutureListener.</span><br><span class="line">        pipeline.invokeHandlerAddedIfNeeded();</span><br><span class="line"></span><br><span class="line">        safeSetSuccess(promise);</span><br><span class="line">        pipeline.fireChannelRegistered();</span><br><span class="line">        // Only fire a channelActive if the channel has never been registered. This prevents firing</span><br><span class="line">        // multiple channel actives if the channel is deregistered and re-registered.</span><br><span class="line">        if (isActive()) &#123;</span><br><span class="line">            if (firstRegistration) &#123;</span><br><span class="line">                //�@һ���Mȥ��ע��Channel�ĸ��dȤ�¼�</span><br><span class="line">                pipeline.fireChannelActive();</span><br><span class="line">            &#125; else if (config().isAutoRead()) &#123;</span><br><span class="line">                // This channel was registered before and autoRead() is set. This means we need to begin read</span><br><span class="line">                // again so that we process inbound data.</span><br><span class="line">                //</span><br><span class="line">                // See https://github.com/netty/netty/issues/4805</span><br><span class="line">                beginRead();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (Throwable t) &#123;</span><br><span class="line">        // Close the channel directly to avoid FD leak.</span><br><span class="line">        closeForcibly();</span><br><span class="line">        closeFuture.setClosed();</span><br><span class="line">        safeSetFailure(promise, t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected void doRegister() throws Exception &#123;</span><br><span class="line">    boolean selected = false;</span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            //����JDK�׌ӵ�ע�����̣����Ҳ��O���κθ��dȤ�¼�0����Channel.this�����������ӵ����У�</span><br><span class="line">            selectionKey = javaChannel().register(eventLoop().selector, 0, this);</span><br><span class="line">            return;</span><br><span class="line">        &#125; catch (CancelledKeyException e) &#123;</span><br><span class="line">            if (!selected) &#123;</span><br><span class="line">                // Force the Selector to select now as the &quot;canceled&quot; SelectionKey may still be</span><br><span class="line">                // cached and not removed because no Select.select(..) operation was called yet.</span><br><span class="line">                eventLoop().selectNow();</span><br><span class="line">                selected = true;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                // We forced a select operation on the selector before but the SelectionKey is still cached</span><br><span class="line">                // for whatever reason. JDK bug ?</span><br><span class="line">                throw e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="NioSocketChannel�x�¼���ע��"><a href="#NioSocketChannel�x�¼���ע��" class="headerlink" title="NioSocketChannel�x�¼���ע��"></a>NioSocketChannel�x�¼���ע��</h3><p>pipeline.fireChannelActive();</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line">// ��DefaultChannelPipeline���^���_ʼ����</span><br><span class="line">public final ChannelPipeline fireChannelActive() &#123;</span><br><span class="line">    //�&#123;��</span><br><span class="line">    AbstractChannelHandlerContext.invokeChannelActive(head);</span><br><span class="line">    return this;</span><br><span class="line">&#125;</span><br><span class="line">// AbstractChannelHandlerContext</span><br><span class="line">static void invokeChannelActive(final AbstractChannelHandlerContext next) &#123;</span><br><span class="line">    EventExecutor executor = next.executor();</span><br><span class="line">    if (executor.inEventLoop()) &#123;</span><br><span class="line">        //�&#123;��</span><br><span class="line">        next.invokeChannelActive();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        executor.execute(new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                next.invokeChannelActive();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//AbstractChannelHandlerContext</span><br><span class="line">private void invokeChannelActive() &#123;</span><br><span class="line">    if (invokeHandler()) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            ((ChannelInboundHandler) handler()).channelActive(this);</span><br><span class="line">        &#125; catch (Throwable t) &#123;</span><br><span class="line">            notifyHandlerException(t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        fireChannelActive();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//DefaultChannelPipeline.HeadContext</span><br><span class="line">public void channelActive(ChannelHandlerContext ctx) throws Exception &#123;</span><br><span class="line">    //��̎�����^�m��������¼�</span><br><span class="line">    ctx.fireChannelActive();</span><br><span class="line">    //����̎��ע���x�¼�</span><br><span class="line">    readIfIsAutoRead();</span><br><span class="line">&#125;</span><br><span class="line">//DefaultChannelPipeline.HeadContext,����pipeline���^������һ���Ԅ�ע���x�¼����&#123;��߉݋</span><br><span class="line">private void readIfIsAutoRead() &#123;</span><br><span class="line">    if (channel.config().isAutoRead()) &#123;</span><br><span class="line">        channel.read();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//AbstractChannel</span><br><span class="line">public Channel read() &#123;</span><br><span class="line">    pipeline.read();</span><br><span class="line">    return this;</span><br><span class="line">&#125;</span><br><span class="line">//DefaultChannelPipeline</span><br><span class="line">public final ChannelPipeline read() &#123;</span><br><span class="line">    tail.read();</span><br><span class="line">    return this;</span><br><span class="line">&#125;</span><br><span class="line">//DefaultChannelPipeline.TailContext</span><br><span class="line">public ChannelHandlerContext read() &#123;</span><br><span class="line">    final AbstractChannelHandlerContext next = findContextOutbound();</span><br><span class="line">    EventExecutor executor = next.executor();</span><br><span class="line">    if (executor.inEventLoop()) &#123;</span><br><span class="line">        //�&#123;��</span><br><span class="line">        next.invokeRead();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        Runnable task = next.invokeReadTask;</span><br><span class="line">        if (task == null) &#123;</span><br><span class="line">            next.invokeReadTask = task = new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    next.invokeRead();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        executor.execute(task);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return this;</span><br><span class="line">&#125;</span><br><span class="line">//AbstractChannelHandlerContext</span><br><span class="line">private void invokeRead() &#123;</span><br><span class="line">    if (invokeHandler()) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            ((ChannelOutboundHandler) handler()).read(this);</span><br><span class="line">        &#125; catch (Throwable t) &#123;</span><br><span class="line">            notifyHandlerException(t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        read();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//DefaultChannelPipeline.HeadContex</span><br><span class="line">public void read(ChannelHandlerContext ctx) &#123;</span><br><span class="line">    unsafe.beginRead();</span><br><span class="line">&#125;</span><br><span class="line">//AbstractChannel.AbstractUnsafe</span><br><span class="line">public final void beginRead() &#123;</span><br><span class="line">    assertEventLoop();</span><br><span class="line"></span><br><span class="line">    if (!isActive()) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        doBeginRead();</span><br><span class="line">    &#125; catch (final Exception e) &#123;</span><br><span class="line">        invokeLater(new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                pipeline.fireExceptionCaught(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        close(voidPromise());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//AbstractNioChannel�����ն��ڳ�ʼ����֮��Ҳ���&#123;�õ��@��߉݋</span><br><span class="line">protected void doBeginRead() throws Exception &#123;</span><br><span class="line">    // Channel.read() or ChannelHandlerContext.read() was called</span><br><span class="line">    //�@ȡ��֮ǰ�O�õĸ��dȤ�¼���key</span><br><span class="line">    final SelectionKey selectionKey = this.selectionKey;</span><br><span class="line">    if (!selectionKey.isValid()) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    readPending = true;</span><br><span class="line">    //readInterestOp���ڄ���NioByteChannel�r����ĸ��dȤ�¼��x�¼��������ն˄t����accept�¼�</span><br><span class="line">    final int interestOps = selectionKey.interestOps();</span><br><span class="line">    if ((interestOps &amp; readInterestOp) == 0) &#123;</span><br><span class="line">        selectionKey.interestOps(interestOps | readInterestOp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>�����ͼ��  </p>
+<p><img src="http://yuml.me/diagram/nofunky/class/[<I>Channel]^-.-[NioSocketChannel],[<I>Channel]^-.-[AbstractChannel],[<I>Channel]^-.-[NioServeSocketrChannel]"><br><img src="http://yuml.me/diagram/nofunky/class/[AbstractChannel]^-[AbstractNioChannel],
+[AbstractNioChannel]^-[AbstractMessageChannel],[AbstractMessageChannel]++-1[NioMessageUnsafe],[AbstractMessageChannel]^-[NioServeSocketrChannel],[NioServeSocketrChannel]++-1[NioServeSocketrChannelConfig],
+[AbstractNioChannel]^-[AbstractNioByteChannel],[AbstractNioByteChannel]++-1[NioByteUnsafe],[AbstractNioByteChannel]^-[NioSocketChannel],[NioSocketChannel]++-1[NioSocketChannelConfig]"><br><img src="http://yuml.me/diagram/nofunky/class/
+[AbstractNioByteChannel]++-1[NioByteUnsafe],[AbstractNioByteChannel]^-[NioSocketChannel],[NioSocketChannel]++-1[NioSocketChannelConfig]"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/17/JVM/HotSpot_virtual_machine_object/" class="archive-article-date">
-  	<time datetime="2018-04-16T17:19:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-17</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/17/JVM/HotSpot_virtual_machine_object/">HotSpot虚拟机对象探秘</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动内存管理机制</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Դ��</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/JVM//" class="article-tag-list-link color4">JVM</a>
+        			<a href="/categories/Netty//" class="article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/03/05/Netty/netty03/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/12/mysql/mysql05_02/" class="archive-article-date">
-  	<time datetime="2018-04-12T14:46:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-12</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/02/27/Netty/netty02/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">NettyԴ���Ķ��ʼǣ����� -- NioEventLoop</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/12/mysql/mysql05_02/">创建高性能的索引（二）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">索引</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Netty���ӽ����߼�"><span class="toc-number">1.</span> <span class="toc-text">Netty���ӽ����߼�</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#�����Ӽ��"><span class="toc-number">1.1.</span> <span class="toc-text">�����Ӽ��</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#NioEventLoop-processSelectedKey-key-channel-���"><span class="toc-number">1.1.1.</span> <span class="toc-text">NioEventLoop.processSelectedKey(key,channel)���</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#�����ӵ�NioSocketChannel�J���"><span class="toc-number">1.1.2.</span> <span class="toc-text">�����ӵ�NioSocketChannel�Ĵ���</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#�����-��"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">�����^��</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#newNiSocketChannel-���"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">newNiSocketChannel()���</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#������NioEventLoop�k����selectorע��"><span class="toc-number">1.1.3.</span> <span class="toc-text">������NioEventLoop�ķ����selectorע��</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#�����pipeline�L���"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">�����pipeline�Ĺ���</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ServerBootstrapAcceptor-channelRead-���"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">ServerBootstrapAcceptor.channelRead()���</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ChannelInitializer����"><span class="toc-number">1.1.3.3.</span> <span class="toc-text">ChannelInitializer����</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#�͑���Channelѡ��NioEventLoop��ע��selector�-��Ԕ��"><span class="toc-number">1.1.3.4.</span> <span class="toc-text">�͑���Channelѡ��NioEventLoop��ע��selector�^��Ԕ��</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NioSocketChannel�x�¼���ע��"><span class="toc-number">1.1.4.</span> <span class="toc-text">NioSocketChannel�x�¼���ע��</span></a></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/03/mysql/mysql05_01/" class="archive-article-date">
-  	<time datetime="2018-04-02T16:35:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/03/mysql/mysql05_01/">创建高性能的索引（一）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">索引</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/03/mysql/mysql04/" class="archive-article-date">
-  	<time datetime="2018-04-02T16:34:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/03/mysql/mysql04/">Schema与数据类型优化</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据类型</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/03/mysql/mysql01/" class="archive-article-date">
-  	<time datetime="2018-04-02T16:33:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/03/mysql/mysql01/">MySQL的架构与历史</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">绪论</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
   
-    </div></section>
+  
+  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+<script>
+  var cloudTieConfig = {
+    url: "http://yoursite.com/2019/03/05/Netty/netty03/", 
+    sourceId: "Netty/netty03",
+    productKey: "true",
+    target: "cloud-tie-wrapper"
+  };
+</script>
+<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -439,8 +383,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
