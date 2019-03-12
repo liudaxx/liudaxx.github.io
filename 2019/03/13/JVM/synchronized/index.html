@@ -17,9 +17,9 @@
 <meta property="og:description" content="深入理解偏向锁前言第一次接触偏向锁时，是在《深入理解Java虚拟机》一书中了解到，但书中描述甚少，给我留下较多疑问，因此便不断查找资料想搞清楚这一块的设计思想和设计细节，看了很多资料后，发现这位博主的文章《死磕Synchronized底层实现–偏向锁》从源码层面来剖析这一块的知识，让我从中学习甚多，并写下这一片博文用大白话来记录这一块的学习内容，都是一些浅薄的理解，如有出错，还望批评指出。 概述偏">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/2019/03/13/JVM/synchronized/aefwer3222.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/13/JVM/synchronized/20190313053751.png">
 <meta property="og:image" content="http://yoursite.com/2019/03/13/JVM/synchronized/20190313053656.png">
-<meta property="og:updated_time" content="2019-03-12T21:43:48.895Z">
+<meta property="og:image" content="http://yoursite.com/2019/03/13/JVM/synchronized/20190313053751.png">
+<meta property="og:updated_time" content="2019-03-12T21:47:39.248Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解偏向锁">
 <meta name="twitter:description" content="深入理解偏向锁前言第一次接触偏向锁时，是在《深入理解Java虚拟机》一书中了解到，但书中描述甚少，给我留下较多疑问，因此便不断查找资料想搞清楚这一块的设计思想和设计细节，看了很多资料后，发现这位博主的文章《死磕Synchronized底层实现–偏向锁》从源码层面来剖析这一块的知识，让我从中学习甚多，并写下这一片博文用大白话来记录这一块的学习内容，都是一些浅薄的理解，如有出错，还望批评指出。 概述偏">
@@ -183,16 +183,18 @@
 <li>对于允许偏向的对象在进行hashcode计算时，首先要撤销所有的偏向(不管是有效的还是无效的)，然后使用CAS将计算好的hashcode值放到MarkWord中，<strong>仅仅适用于“identity hashcode(使用Object类的hashcode()方法进行计算)”</strong>。  </li>
 <li>HotSpot中偏向锁的撤销是JVM处于在全局安全点时被执行的。</li>
 </ol>
-<h2 id="偏向锁的获取"><a href="#偏向锁的获取" class="headerlink" title="偏向锁的获取"></a>偏向锁的获取</h2><p>流程图：<br><img src="/2019/03/13/JVM/synchronized/20190313053751.png" alt="clipboard.png"><br>由上面可知，在线程获取偏向锁时，仅有可重偏向状态（epoch过期）和匿名偏向状态（为偏向任何线程）可被获取。<br>若该对象的允许偏向为为1，获取流程描述如下：</p>
+<h2 id="偏向锁的获取"><a href="#偏向锁的获取" class="headerlink" title="偏向锁的获取"></a>偏向锁的获取</h2><p>流程图：<br><img src="/2019/03/13/JVM/synchronized/20190313053656.png" alt="clipboard.png"></p>
+<p>由上面可知，在线程获取偏向锁时，仅有可重偏向状态（epoch过期）和匿名偏向状态（为偏向任何线程）可被获取。<br>若该对象的允许偏向为为1，获取流程描述如下：</p>
 <ol>
 <li>首先找到一个空闲的lock_record,并将Lock Record的obj指针指向锁对象，检查对象mark_word的epoch是否未过期并偏向线程为请求线程，若是，则获得锁，流程结束。若否执行2。</li>
 <li>检查epoch值是否过期，若未过期，执行3。若已过期，则获取class的prototype_header并构造成偏向请求线程的mark_word，执行CAS操作，若成功则获得锁，流程结束。若失败，则表明存在线程竞争，<strong>执行锁升级流程</strong>。</li>
 <li>若未过期，偏向线程又不是请求线程。则该状态只能是匿名偏向状态或已偏向状态，直接构造匿名偏向状态的mark_word和偏向请求线程的mark_word，执行CAS，若成功，表明对象为匿名偏向状态，获得锁，流程结束；若失败，则表明对象处于已偏向状态，执行<strong>撤销流程</strong>，撤销流程需等待safe_point执行，撤销后会进入<strong>锁升级流程</strong>。</li>
 </ol>
 <h2 id="偏向锁的释放"><a href="#偏向锁的释放" class="headerlink" title="偏向锁的释放"></a>偏向锁的释放</h2><p>仅将lock_record释放，不会操作锁对象的mark_word。</p>
-<h2 id="偏向锁的撤销"><a href="#偏向锁的撤销" class="headerlink" title="偏向锁的撤销"></a>偏向锁的撤销</h2><p>流程图：<br><img src="/2019/03/13/JVM/synchronized/20190313053656.png" alt="clipboard.png"></p>
+<h2 id="偏向锁的撤销"><a href="#偏向锁的撤销" class="headerlink" title="偏向锁的撤销"></a>偏向锁的撤销</h2><p>流程图：<br><img src="/2019/03/13/JVM/synchronized/20190313053751.png" alt="clipboard.png"></p>
 <ol>
-<li>遍历线程判断偏向线程是否存活，若死亡或存活但不在同步代码块中，则将对象mark_word设置未001无锁状态，并<strong>执行锁升级流程</strong>。若线程仍存在且正执行同步代码块，则将最高位lock_record中的displaced_mark_word属性（对象原本mark_word的副本）的末三位改为001无锁状态，obj属性指向锁对象的指针，其余lock_record（重入部分）设置为null，接着<strong>执行锁升级流程</strong>。</li>
+<li>遍历线程判断偏向线程是否存活，若死亡或存活但不在同步代码块中，则将对象mark_word设置未001无锁状态，并<strong>执行锁升级流程</strong>。</li>
+<li>若线程仍存在且正执行同步代码块，则将最高位lock_record中的displaced_mark_word属性（对象原本mark_word的副本）的末三位改为001无锁状态，obj属性指向锁对象的指针，其余lock_record（重入部分）设置为null，接着<strong>执行锁升级流程</strong>。</li>
 </ol>
 <h2 id="批量重偏向以及批量撤销"><a href="#批量重偏向以及批量撤销" class="headerlink" title="批量重偏向以及批量撤销"></a>批量重偏向以及批量撤销</h2><blockquote>
 <p>如果一个锁已经偏向线程A，当线程B尝试获得该锁时，无论线程A是什么状态，该锁都会被撤销并升级成轻量级锁或重量级锁（不考虑批量重偏向的情况）。而考虑批量重偏向机制时时，当撤销达到了一定的阈值，就会发生批量重偏向，epoch值会+1,这么一来原对象的epoch值就会过期变成可重偏向状态，线程B就可以获得该偏向锁。  </p>
