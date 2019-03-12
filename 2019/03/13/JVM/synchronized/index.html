@@ -6,15 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/3 | Your Thoughts</title>
+  <title>深入理解偏向锁 | Your Thoughts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Your Thoughts">
-<meta property="og:url" content="http://yoursite.com/archives/2019/03/index.html">
+  <meta name="description" content="深入理解偏向锁前言第一次接触偏向锁时，是在《深入理解Java虚拟机》一书中了解到，但书中描述甚少，给我留下较多疑问，因此便不断查找资料想搞清楚这一块的设计思想和设计细节，看了很多资料后，发现这位博主的文章《死磕Synchronized底层实现–偏向锁》从源码层面来剖析这一块的知识，让我从中学习甚多，并写下这一片博文用大白话来记录这一块的学习内容，都是一些浅薄的理解，如有出错，还望批评指出。 概述偏">
+<meta name="keywords" content="JVM,Synchronized">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解偏向锁">
+<meta property="og:url" content="http://yoursite.com/2019/03/13/JVM/synchronized/index.html">
 <meta property="og:site_name" content="Your Thoughts">
+<meta property="og:description" content="深入理解偏向锁前言第一次接触偏向锁时，是在《深入理解Java虚拟机》一书中了解到，但书中描述甚少，给我留下较多疑问，因此便不断查找资料想搞清楚这一块的设计思想和设计细节，看了很多资料后，发现这位博主的文章《死磕Synchronized底层实现–偏向锁》从源码层面来剖析这一块的知识，让我从中学习甚多，并写下这一片博文用大白话来记录这一块的学习内容，都是一些浅薄的理解，如有出错，还望批评指出。 概述偏">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2019/03/13/JVM/synchronized/aefwer3222.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/13/JVM/synchronized/20190313053751.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/13/JVM/synchronized/20190313053656.png">
+<meta property="og:updated_time" content="2019-03-12T21:43:48.895Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Your Thoughts">
+<meta name="twitter:title" content="深入理解偏向锁">
+<meta name="twitter:description" content="深入理解偏向锁前言第一次接触偏向锁时，是在《深入理解Java虚拟机》一书中了解到，但书中描述甚少，给我留下较多疑问，因此便不断查找资料想搞清楚这一块的设计思想和设计细节，看了很多资料后，发现这位博主的文章《死磕Synchronized底层实现–偏向锁》从源码层面来剖析这一块的知识，让我从中学习甚多，并写下这一片博文用大白话来记录这一块的学习内容，都是一些浅薄的理解，如有出错，还望批评指出。 概述偏">
+<meta name="twitter:image" content="http://yoursite.com/2019/03/13/JVM/synchronized/aefwer3222.png">
   
     <link rel="alternative" href="/atom.xml" title="Your Thoughts" type="application/atom+xml">
   
@@ -136,36 +145,74 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-JVM/synchronized" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/03/13/JVM/synchronized/" class="archive-article-date">
-  	<time datetime="2019-03-12T21:39:45.898Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-13</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/03/13/JVM/synchronized/">深入理解偏向锁</a>
+    <h1 class="article-title" itemprop="name">
+      深入理解偏向锁
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/03/13/JVM/synchronized/" class="archive-article-date">
+  	<time datetime="2019-03-12T21:39:45.898Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="深入理解偏向锁"><a href="#深入理解偏向锁" class="headerlink" title="深入理解偏向锁"></a>深入理解偏向锁</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>第一次接触偏向锁时，是在《深入理解Java虚拟机》一书中了解到，但书中描述甚少，给我留下较多疑问，因此便不断查找资料想搞清楚这一块的设计思想和设计细节，看了很多资料后，发现这位博主的文章<a href="https://github.com/farmerjohngit/myblog/issues/13" target="_blank" rel="noopener">《死磕Synchronized底层实现–偏向锁》</a>从源码层面来剖析这一块的知识，让我从中学习甚多，并写下这一片博文用大白话来记录这一块的学习内容，都是一些浅薄的理解，如有出错，还望批评指出。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>偏向锁设计的初衷，是在<strong>只有一个线程执行同步代码块时能够提高性能</strong>。  </p>
+<ul>
+<li><strong>为什么只有一个线程执行同步代码块时能够提高性能？</strong> 因为，当只有一个线程获取该对象的偏向锁时，该线程只需要在第一次获得该锁时进行一次CAS操作，将自己的线程ID存入对象的mark_word中，而后每次获得锁只需对比一下偏向线程是否还是自己，如果是，直接进入同步代码块执行。  </li>
+<li><strong>而为什么当多线程竞争时又不适用用了</strong>？因为偏向锁的释放并不会将对象头mark_word中的线程ID恢复原样，只会释放栈中的lock_record。但另外一个线程尝试获得该对象的偏向锁时，就会发现该对象已经偏向其他线程，就会进入偏向锁的撤销流程，该撤销流程必须在safe_point处执行，撤销完又需要升级为轻量锁，这个过程相当耗时，所以多线程竞争下，偏向锁就不适用了。  </li>
+</ul>
+<p>此外，偏向锁还有一个<strong>批量重偏向机制在</strong>以及<strong>批量撤销机制</strong>。我的理解中，前者是为避免在某些特殊情况下偏向锁在<strong>还没派上用场就失去了作用</strong>而设计，后者是为避免由于批量重偏向机制被滥用而出现的补充。更详细的内容将在后面探讨。<br><a id="more"></a></p>
+<h2 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h2><p>一个对象在创建（allocate） 后， 根据偏斜锁机制是否打开， 对象 mark_word 状态以不同方式转换的过程：<br><img src="/2019/03/13/JVM/synchronized/aefwer3222.png" alt="clipboard.png"></p>
+<ol>
+<li>JVM中的每个类也有一个类似mark_word的prototype_header，用来标记该class的epoch和偏向开关等信息。epoch值与批量重偏向关系紧密</li>
+<li><p>当允许重偏向位被置为”1”时，偏向锁会有以下三种状态，<strong>且仅有前两种状态偏向锁能被获取</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">i.  匿名偏向(Anonymously biased)  </span><br><span class="line">    在此状态下thread_ptr为NULL(0)，意味着还没有线程偏向于这个锁对象。第一个试图获取该锁的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。这是允许偏向锁的类对象的初始状态。</span><br><span class="line">ii. 可重偏向(Rebiasable)</span><br><span class="line">    在此状态下，偏向锁的epoch字段是无效的(与锁对象对应的klass的mark_prototype的epoch值不匹配)。下一个试图获取锁对象的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。在批量重偏向的操作中，未被持有的锁对象都被至于这个状态，以便允许被快速重偏向。</span><br><span class="line">iii. 已偏向(Biased)</span><br><span class="line">    这种状态下，thread ptr非空，且epoch为有效值——意味着其他线程正在只有这个锁对象</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>基于偏向锁对象需要使用hashcode字段作为偏向线程id标识的事实，被hash的对象不可被用作偏向锁。</p>
+</li>
+<li>对于允许偏向的对象在进行hashcode计算时，首先要撤销所有的偏向(不管是有效的还是无效的)，然后使用CAS将计算好的hashcode值放到MarkWord中，<strong>仅仅适用于“identity hashcode(使用Object类的hashcode()方法进行计算)”</strong>。  </li>
+<li>HotSpot中偏向锁的撤销是JVM处于在全局安全点时被执行的。</li>
+</ol>
+<h2 id="偏向锁的获取"><a href="#偏向锁的获取" class="headerlink" title="偏向锁的获取"></a>偏向锁的获取</h2><p>流程图：<br><img src="/2019/03/13/JVM/synchronized/20190313053751.png" alt="clipboard.png"><br>由上面可知，在线程获取偏向锁时，仅有可重偏向状态（epoch过期）和匿名偏向状态（为偏向任何线程）可被获取。<br>若该对象的允许偏向为为1，获取流程描述如下：</p>
+<ol>
+<li>首先找到一个空闲的lock_record,并将Lock Record的obj指针指向锁对象，检查对象mark_word的epoch是否未过期并偏向线程为请求线程，若是，则获得锁，流程结束。若否执行2。</li>
+<li>检查epoch值是否过期，若未过期，执行3。若已过期，则获取class的prototype_header并构造成偏向请求线程的mark_word，执行CAS操作，若成功则获得锁，流程结束。若失败，则表明存在线程竞争，<strong>执行锁升级流程</strong>。</li>
+<li>若未过期，偏向线程又不是请求线程。则该状态只能是匿名偏向状态或已偏向状态，直接构造匿名偏向状态的mark_word和偏向请求线程的mark_word，执行CAS，若成功，表明对象为匿名偏向状态，获得锁，流程结束；若失败，则表明对象处于已偏向状态，执行<strong>撤销流程</strong>，撤销流程需等待safe_point执行，撤销后会进入<strong>锁升级流程</strong>。</li>
+</ol>
+<h2 id="偏向锁的释放"><a href="#偏向锁的释放" class="headerlink" title="偏向锁的释放"></a>偏向锁的释放</h2><p>仅将lock_record释放，不会操作锁对象的mark_word。</p>
+<h2 id="偏向锁的撤销"><a href="#偏向锁的撤销" class="headerlink" title="偏向锁的撤销"></a>偏向锁的撤销</h2><p>流程图：<br><img src="/2019/03/13/JVM/synchronized/20190313053656.png" alt="clipboard.png"></p>
+<ol>
+<li>遍历线程判断偏向线程是否存活，若死亡或存活但不在同步代码块中，则将对象mark_word设置未001无锁状态，并<strong>执行锁升级流程</strong>。若线程仍存在且正执行同步代码块，则将最高位lock_record中的displaced_mark_word属性（对象原本mark_word的副本）的末三位改为001无锁状态，obj属性指向锁对象的指针，其余lock_record（重入部分）设置为null，接着<strong>执行锁升级流程</strong>。</li>
+</ol>
+<h2 id="批量重偏向以及批量撤销"><a href="#批量重偏向以及批量撤销" class="headerlink" title="批量重偏向以及批量撤销"></a>批量重偏向以及批量撤销</h2><blockquote>
+<p>如果一个锁已经偏向线程A，当线程B尝试获得该锁时，无论线程A是什么状态，该锁都会被撤销并升级成轻量级锁或重量级锁（不考虑批量重偏向的情况）。而考虑批量重偏向机制时时，当撤销达到了一定的阈值，就会发生批量重偏向，epoch值会+1,这么一来原对象的epoch值就会过期变成可重偏向状态，线程B就可以获得该偏向锁。  </p>
+</blockquote>
+<p>详细做法：  </p>
+<ol>
+<li>以class为单位，<strong>为每个class维护一个偏向锁撤销计数器</strong>，每一次该class的对象发生偏向撤销操作时，该计数器+1，当这个值达到重偏向阈值（默认20）时，<strong>JVM就认为该class的偏向锁有问题，因此会进行批量重偏向</strong>。</li>
+<li>每个class对象会有一个对应的<code>epoch</code>字段，每个处于偏向锁状态对象的<code>mark _word中</code>也有该字段，其初始值为创建该对象时，<strong>class中的<code>epoch</code>的值。每次发生批量重偏向时，就将该值+1</strong>，同时遍历JVM中所有线程的栈，找到该class所有正处于加锁状态的偏向锁，将其<code>epoch</code>字段改为新值。</li>
+<li>下次获得锁时，发现当前对象的<code>epoch</code>值和class的<code>epoch</code>不相等，<strong>那就算当前已经偏向了其他线程，也不会执行撤销操作</strong>，而是直接通过CAS操作将其<code>mark word</code>的Thread Id 改成当前线程Id。</li>
+<li>当达到重偏向阈值后，假设该class计数器继续增长，<strong>当其达到批量撤销的阈值后（默认40）</strong>，JVM就认为该class的使用场景存在多线程竞争，会标记该class为不可偏向，之后，对于该class的锁，直接走轻量级锁的逻辑。      </li>
+<li>BiasedLockingBulkRevokeThreshold是批量撤销阈值（默认40），BiasedLockingDecayTime是开启一次新的批量重偏向距离上次批量重偏向的后的延迟时间，默认25000。也就是开启批量重偏向后，经过了一段较长的时间（&gt;=BiasedLockingDecayTime），撤销计数器才超过阈值，那我们会重置计数器。</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -181,7 +228,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -194,70 +241,128 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/03/13/JVM/synchronized/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/03/05/Netty/netty03/" class="archive-article-date">
-  	<time datetime="2019-03-05T15:33:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-05</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/03/05/Netty/netty03/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Netty源码阅读笔记（三） --Netty连接接入逻辑</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/03/05/Netty/netty03/">Netty源码阅读笔记（三） --Netty连接接入逻辑</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Netty//" class="article-tag-list-link color1">Netty</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#深入理解偏向锁"><span class="toc-number">1.</span> <span class="toc-text">深入理解偏向锁</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-number">1.2.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#预备知识"><span class="toc-number">1.3.</span> <span class="toc-text">预备知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#偏向锁的获取"><span class="toc-number">1.4.</span> <span class="toc-text">偏向锁的获取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#偏向锁的释放"><span class="toc-number">1.5.</span> <span class="toc-text">偏向锁的释放</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#偏向锁的撤销"><span class="toc-number">1.6.</span> <span class="toc-text">偏向锁的撤销</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#批量重偏向以及批量撤销"><span class="toc-number">1.7.</span> <span class="toc-text">批量重偏向以及批量撤销</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
   
-    </div></section>
+  
+  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+<script>
+  var cloudTieConfig = {
+    url: "http://yoursite.com/2019/03/13/JVM/synchronized/", 
+    sourceId: "JVM/synchronized",
+    productKey: "true",
+    target: "cloud-tie-wrapper"
+  };
+</script>
+<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -280,8 +385,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

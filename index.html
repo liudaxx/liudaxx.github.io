@@ -138,6 +138,101 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-JVM/synchronized" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/13/JVM/synchronized/">深入理解偏向锁</a>
+    </h1>
+  
+
+        
+        <a href="/2019/03/13/JVM/synchronized/" class="archive-article-date">
+  	<time datetime="2019-03-12T21:39:45.898Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="深入理解偏向锁"><a href="#深入理解偏向锁" class="headerlink" title="深入理解偏向锁"></a>深入理解偏向锁</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>第一次接触偏向锁时，是在《深入理解Java虚拟机》一书中了解到，但书中描述甚少，给我留下较多疑问，因此便不断查找资料想搞清楚这一块的设计思想和设计细节，看了很多资料后，发现这位博主的文章<a href="https://github.com/farmerjohngit/myblog/issues/13" target="_blank" rel="noopener">《死磕Synchronized底层实现–偏向锁》</a>从源码层面来剖析这一块的知识，让我从中学习甚多，并写下这一片博文用大白话来记录这一块的学习内容，都是一些浅薄的理解，如有出错，还望批评指出。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>偏向锁设计的初衷，是在<strong>只有一个线程执行同步代码块时能够提高性能</strong>。  </p>
+<ul>
+<li><strong>为什么只有一个线程执行同步代码块时能够提高性能？</strong> 因为，当只有一个线程获取该对象的偏向锁时，该线程只需要在第一次获得该锁时进行一次CAS操作，将自己的线程ID存入对象的mark_word中，而后每次获得锁只需对比一下偏向线程是否还是自己，如果是，直接进入同步代码块执行。  </li>
+<li><strong>而为什么当多线程竞争时又不适用用了</strong>？因为偏向锁的释放并不会将对象头mark_word中的线程ID恢复原样，只会释放栈中的lock_record。但另外一个线程尝试获得该对象的偏向锁时，就会发现该对象已经偏向其他线程，就会进入偏向锁的撤销流程，该撤销流程必须在safe_point处执行，撤销完又需要升级为轻量锁，这个过程相当耗时，所以多线程竞争下，偏向锁就不适用了。  </li>
+</ul>
+<p>此外，偏向锁还有一个<strong>批量重偏向机制在</strong>以及<strong>批量撤销机制</strong>。我的理解中，前者是为避免在某些特殊情况下偏向锁在<strong>还没派上用场就失去了作用</strong>而设计，后者是为避免由于批量重偏向机制被滥用而出现的补充。更详细的内容将在后面探讨。<br></p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Synchronized</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/JVM//" class="article-tag-list-link color4">JVM</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/03/13/JVM/synchronized/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Netty/netty03" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1170,6 +1265,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Synchronized</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
@@ -1178,19 +1277,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
             
             <div class="clearfix"></div>
