@@ -138,6 +138,201 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/">ReentrantLockԴ�루һ�� -- Sync��Lock</a>
+    </h1>
+  
+
+        
+        <a href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/" class="archive-article-date">
+  	<time datetime="2019-03-16T13:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-0-Lock"><a href="#1-0-Lock" class="headerlink" title="1.0 Lock"></a>1.0 Lock</h2><p>ReentrantLock���Lock����ʹ�ö�����Syncʵ�֣�Ĭ�������ʹ�÷ǹ�ƽ��ʵ��</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public ReentrantLock() &#123;</span><br><span class="line">    sync = new NonfairSync();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Creates an instance of &#123;@code ReentrantLock&#125; with the</span><br><span class="line"> * given fairness policy.</span><br><span class="line"> *</span><br><span class="line"> * @param fair &#123;@code true&#125; if this lock should use a fair ordering policy</span><br><span class="line"> */</span><br><span class="line">public ReentrantLock(boolean fair) &#123;</span><br><span class="line">    sync = fair ? new FairSync() : new NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Դ��</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ReentrantLock</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JavaConcurrency/AQS源码阅读 -- 独占模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/">AQSԴ��</a>
+    </h1>
+  
+
+        
+        <a href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/" class="archive-article-date">
+  	<time datetime="2019-03-16T13:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>������Ҫ���ܶ���ģʽ���Դ��</p>
+<h2 id="1-0-Node"><a href="#1-0-Node" class="headerlink" title="1.0 Node"></a>1.0 Node</h2><p>�ڵ㹲������ģʽ������״̬��<br>����ģʽ��</p>
+<ol>
+<li>����ģʽ</li>
+<li>����ģʽ</li>
+</ol>
+<p>����״̬��</p>
+<ol>
+<li>0 ��ͷ�ڵ��߳�release�󣬻ᱻ��Ϊ��״̬</li>
+<li>SIGNAL -1������̽ڵ�Ҫ������ǰ�����ǰ���ڵ����ø�״̬����releaseʱ�����ֽڵ㴦�ڸ�״̬ʱ���ỽ�Ѻ����ڵ�</li>
+<li>CONDITION -2����ζ�Ÿ��߳�����һ�������ϵȴ����������ȴ�����ʱ������״̬��0�ȼ۴�������</li>
+<li>PROPAGATE -3������ģʽ��ʹ��</li>
+<li>CANCELED 1�����ڵ��ϵ��̱߳��жϺ󣬻ᱻ��Ϊ��״̬��</li></ol>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Դ��</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-JVM/synchronized" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1067,103 +1262,10 @@
 
 
   
-    <article id="post-mysql/mysql01" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/03/mysql/mysql01/">MySQL的架构与历史</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/03/mysql/mysql01/" class="archive-article-date">
-  	<time datetime="2018-04-02T16:33:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="1-1-Mysql逻辑架构"><a href="#1-1-Mysql逻辑架构" class="headerlink" title="1.1 Mysql逻辑架构"></a>1.1 Mysql逻辑架构</h2><p><img src="/2018/04/03/mysql/mysql01/f4743bd9ff5a9ba56067d86f088e1463.png" alt="clipboard.png"></p>
-<ul>
-<li><p>最上层的并不是Mysql独有，大多数基于C/S的工具或者服务都有类似的架构</p>
-</li>
-<li><p>第二层是大多数MySQL的<strong>核心服务功能</strong>。包括<strong>查询解析、分析、优化、缓存以及内置函数</strong>，<strong>所有跨存储引擎的功能都在这一层实现</strong>：存储过程、触发器、视图等</p>
-</li>
-<li><p>第三层包含了存储引擎、存储引擎<strong>负责MySQL中数据的存储与提取</strong>。服务器通过API与引擎进行通信，这些接口屏蔽了不同引擎的差异使得这些差异对上层的查询过程透明。存储引擎<strong>不会解析SQL</strong>，不同存储引擎<strong>也不会互相通信</strong>。</p>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">绪论</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/03/mysql/mysql01/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 
 
@@ -1266,6 +1368,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Synchronized</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Դ��</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AQS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ReentrantLock</a>
               </li>
              
               <li class="article-tag-list-item">
