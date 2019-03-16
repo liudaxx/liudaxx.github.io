@@ -138,6 +138,108 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql/mysql04" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/03/mysql/mysql04/">Schema与数据类型优化</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/03/mysql/mysql04/" class="archive-article-date">
+  	<time datetime="2018-04-02T16:34:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="4-1-选择优化的数据类型"><a href="#4-1-选择优化的数据类型" class="headerlink" title="4.1 选择优化的数据类型"></a>4.1 选择优化的数据类型</h2><p><strong>更小的通常更好</strong>：</p>
+<blockquote>
+<p>  占用磁盘、内存、CPU缓存以及处理时需要的CUP周期更少</p>
+</blockquote>
+<p><strong>简单就好</strong>：</p>
+<blockquote>
+<p>  简单的数据类型的操作通常需要更少的CPU周期</p>
+</blockquote>
+<p><strong>尽量避免NULL</strong>：</p>
+<blockquote>
+<p>  可为NULL的列<em>使得索引、索引统计和值比较都更复杂</em>；会<em>使用更多的存储空间</em>，在MySQL里需要特殊处理；被索引时，<em>每个索引记录需要一个额外的字节</em>；在MyISAM里还会使固定大小的索引变成可变大小<strong>。</strong></p>
+</blockquote>
+<blockquote>
+<p>  <strong>如果在列上建索引，就应该避免设计成可为NULL的列</strong><br></p></blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据类型</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/03/mysql/mysql04/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-mysql/mysql01" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -352,11 +454,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -372,7 +470,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
               </li>
             
             <div class="clearfix"></div>

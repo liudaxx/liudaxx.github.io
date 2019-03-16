@@ -6,23 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>AQS源码 | Your Thoughts</title>
+  <title>AQS源码阅读（一） -- 独占模式 | Your Thoughts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="本章主要介绍独享模式相关源码 1.0 Node节点共有两种模式及五种状态。两种模式：  独享模式 共享模式  五种状态：  0 当头节点线程release后，会被置为此状态 SIGNAL -1：当后继节点要被阻塞前，会把前驱节点设置该状态。当release时，发现节点处于该状态时，会唤醒后续节点 CONDITION -2：意味着该线程正在一个条件上等待，当来到等待队列时，（该状态与0等价处理？）">
 <meta name="keywords" content="源码,AQS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AQS源码">
-<meta property="og:url" content="http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/index.html">
+<meta property="og:title" content="AQS源码阅读（一） -- 独占模式">
+<meta property="og:url" content="http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读（一） -- 独占模式/index.html">
 <meta property="og:site_name" content="Your Thoughts">
 <meta property="og:description" content="本章主要介绍独享模式相关源码 1.0 Node节点共有两种模式及五种状态。两种模式：  独享模式 共享模式  五种状态：  0 当头节点线程release后，会被置为此状态 SIGNAL -1：当后继节点要被阻塞前，会把前驱节点设置该状态。当release时，发现节点处于该状态时，会唤醒后续节点 CONDITION -2：意味着该线程正在一个条件上等待，当来到等待队列时，（该状态与0等价处理？）">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读%20--%20独占模式/ac_20190316215422.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读%20--%20独占模式/re_20190316215532.png">
-<meta property="og:updated_time" content="2019-03-16T14:27:05.635Z">
+<meta property="og:image" content="http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读（一）%20--%20独占模式/ac_20190316215422.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读（一）%20--%20独占模式/re_20190316215532.png">
+<meta property="og:updated_time" content="2019-03-16T17:00:00.790Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AQS源码">
+<meta name="twitter:title" content="AQS源码阅读（一） -- 独占模式">
 <meta name="twitter:description" content="本章主要介绍独享模式相关源码 1.0 Node节点共有两种模式及五种状态。两种模式：  独享模式 共享模式  五种状态：  0 当头节点线程release后，会被置为此状态 SIGNAL -1：当后继节点要被阻塞前，会把前驱节点设置该状态。当release时，发现节点处于该状态时，会唤醒后续节点 CONDITION -2：意味着该线程正在一个条件上等待，当来到等待队列时，（该状态与0等价处理？）">
-<meta name="twitter:image" content="http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读%20--%20独占模式/ac_20190316215422.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读（一）%20--%20独占模式/ac_20190316215422.png">
   
     <link rel="alternative" href="/atom.xml" title="Your Thoughts" type="application/atom+xml">
   
@@ -144,19 +144,19 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-JavaConcurrency/AQS源码阅读 -- 独占模式" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-JavaConcurrency/AQS源码阅读（一） -- 独占模式" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      AQS源码
+      AQS源码阅读（一） -- 独占模式
     </h1>
   
 
         
-        <a href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/" class="archive-article-date">
+        <a href="/2019/03/16/JavaConcurrency/AQS源码阅读（一） -- 独占模式/" class="archive-article-date">
   	<time datetime="2019-03-16T13:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-16</time>
 </a>
         
@@ -182,7 +182,7 @@
 </ol>
 <p>Node是构成同步队列的基础，AQS拥有首节点（head）和尾节点（tail），没有成功获取同步状态的线程将会放入到队列的尾部<br>CAS设置尾节点方法CompareAndSetTail(Node expect,Node update) ，设置首节点是由成功获取锁的线程来完成的，由于只有一个线程能够成功获取锁，因此设置首节点不需要CAS操作。<br>同步队列遵循FIFO，<strong>首节点是获取锁成功的节点</strong>，首节点的线程<strong>在释放锁时，将会唤醒后继节点</strong>，而后继节点将会在获取到锁时，将自己设置位首节点</p>
 <h2 id="2-0-AQS同步状态独享式获取与释放"><a href="#2-0-AQS同步状态独享式获取与释放" class="headerlink" title="2.0 AQS同步状态独享式获取与释放"></a>2.0 AQS同步状态独享式获取与释放</h2><p>acquire()时若调用子类tryAcquire()成功，则直接返回；若失败，则会构造一个独占的节点并调用addWaiter(node)添加到队列中，添加完成后又会调用acquireQueued(node,arg)在这里面循环尝试去获得锁。若前驱节点为head则尝尝试再次调用tryAcquire()去获得锁，获得成功会将头节点替换成当前节点，并返回。若尝试获取失败则会首先调用shouldParkAfterFailedAcquire(p, node),在这里面将会判断前驱节点的状态并根据相关状态改变状态，若该方法返回true，则会调用parkAndCheckInterrupt()，去调用park方法去挂起当前线程，当该线程被唤醒时，会返回该线程的中断状态，并重新进入尝试获得锁的循环中。</p>
-<h3 id="2-1-acquire"><a href="#2-1-acquire" class="headerlink" title="2.1 acquire()"></a>2.1 acquire()</h3><p>粗糙的流程图如下… :<br><img src="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/ac_20190316215422.png" alt="clipboard.png"><br>通过调用AQS的acquire(int arg)方法可以获取同步状态，<strong>该方法对中断不起作用</strong>，即由于线程获取同步状态失败后进入同步队列中，后续对线程进行中断操作时，线程不会从同步队列中移出。</p>
+<h3 id="2-1-acquire"><a href="#2-1-acquire" class="headerlink" title="2.1 acquire()"></a>2.1 acquire()</h3><p>粗糙的流程图如下… :<br><img src="/2019/03/16/JavaConcurrency/AQS源码阅读（一） -- 独占模式/ac_20190316215422.png" alt="clipboard.png"><br>通过调用AQS的acquire(int arg)方法可以获取同步状态，<strong>该方法对中断不起作用</strong>，即由于线程获取同步状态失败后进入同步队列中，后续对线程进行中断操作时，线程不会从同步队列中移出。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public final void acquire(int arg) &#123;</span><br><span class="line">    if (!tryAcquire(arg) &amp;&amp;</span><br><span class="line">        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</span><br><span class="line">        selfInterrupt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>首先调用自定义同步器实现的tryAcquire(int arg)方法，该方法保证线程安全的获取同步状态</li>
@@ -199,7 +199,7 @@
 <li>倘若前驱结点的ws值不为CANCELLED，也不为SIGNAL(当从Condition的条件等待队列转移到同步队列时，结点状态为CONDITION因此需要转换为SIGNAL)，那么将其转换为SIGNAL状态，等待被唤醒。</li>
 <li>若shouldParkAfterFailedAcquire()方法返回true，即前驱结点为SIGNAL状态同时又不是head结点，那么使用parkAndCheckInterrupt()方法挂起当前线程，称为WAITING状态，需要等待一个unpark()操作来唤醒它</li>
 </ol>
-<h3 id="2-2-release"><a href="#2-2-release" class="headerlink" title="2.2 release"></a>2.2 release</h3><p>同样粗糙的流程图如下.. :<br><img src="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/re_20190316215532.png" alt="clipboard.png"><br>线程获取同步状态并且执行完了对应的逻辑后，需要释放同步状态，使得后续节点继续获取同步状态，通过调用release(int arg)方法来实现。</p>
+<h3 id="2-2-release"><a href="#2-2-release" class="headerlink" title="2.2 release"></a>2.2 release</h3><p>同样粗糙的流程图如下.. :<br><img src="/2019/03/16/JavaConcurrency/AQS源码阅读（一） -- 独占模式/re_20190316215532.png" alt="clipboard.png"><br>线程获取同步状态并且执行完了对应的逻辑后，需要释放同步状态，使得后续节点继续获取同步状态，通过调用release(int arg)方法来实现。</p>
 <p>当头节点不空且状态不为0时会调用unparkSuccessor(h)方法。<br>unparkSuccessor(h)会唤醒第一个h的非取消状态的后继节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">public final boolean release(int arg) &#123;</span><br><span class="line">    if (tryRelease(arg)) &#123;</span><br><span class="line">        Node h = head;</span><br><span class="line">        if (h != null &amp;&amp; h.waitStatus != 0)</span><br><span class="line">            unparkSuccessor(h);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void unparkSuccessor(Node node) &#123;</span><br><span class="line">    /*</span><br><span class="line">     * If status is negative (i.e., possibly needing signal) try</span><br><span class="line">     * to clear in anticipation of signalling.  It is OK if this</span><br><span class="line">     * fails or if status is changed by waiting thread.</span><br><span class="line">     */</span><br><span class="line">    int ws = node.waitStatus;</span><br><span class="line">    if (ws &lt; 0)</span><br><span class="line">        compareAndSetWaitStatus(node, ws, 0);</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * Thread to unpark is held in successor, which is normally</span><br><span class="line">     * just the next node.  But if cancelled or apparently null,</span><br><span class="line">     * traverse backwards from tail to find the actual</span><br><span class="line">     * non-cancelled successor.</span><br><span class="line">     */</span><br><span class="line">    Node s = node.next;</span><br><span class="line">    if (s == null || s.waitStatus &gt; 0) &#123;</span><br><span class="line">        s = null;</span><br><span class="line">        for (Node t = tail; t != null &amp;&amp; t != node; t = t.prev)</span><br><span class="line">            if (t.waitStatus &lt;= 0)</span><br><span class="line">                s = t;</span><br><span class="line">    &#125;</span><br><span class="line">    if (s != null)</span><br><span class="line">        LockSupport.unpark(s.thread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <ol>
 <li>调用子类实现的tryRelease()方法，若返回true，则2</li>
@@ -292,7 +292,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读（一） -- 独占模式/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -305,6 +305,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/03/17/JavaConcurrency/AQS源码阅读（二） -- Condition/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          AQS源码阅读（二） -- Condition
+        
+      </div>
+    </a>
   
   
     <a href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/" id="article-nav-older" class="article-nav-link-wrap">
@@ -352,8 +361,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/", 
-    sourceId: "JavaConcurrency/AQS源码阅读 -- 独占模式",
+    url: "http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读（一） -- 独占模式/", 
+    sourceId: "JavaConcurrency/AQS源码阅读（一） -- 独占模式",
     productKey: "true",
     target: "cloud-tie-wrapper"
   };
@@ -478,11 +487,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -498,7 +503,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
               </li>
             
             <div class="clearfix"></div>
