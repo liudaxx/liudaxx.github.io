@@ -138,19 +138,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JavaConcurrency/AQS源码阅读 -- 独占模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/">ReentrantLockԴ�루һ�� -- Sync��Lock</a>
+      <a class="article-title" href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/">AQS源码</a>
     </h1>
   
 
         
-        <a href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/" class="archive-article-date">
+        <a href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/" class="archive-article-date">
   	<time datetime="2019-03-16T13:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-16</time>
 </a>
         
@@ -158,8 +158,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1-0-Lock"><a href="#1-0-Lock" class="headerlink" title="1.0 Lock"></a>1.0 Lock</h2><p>ReentrantLock���Lock����ʹ�ö�����Syncʵ�֣�Ĭ�������ʹ�÷ǹ�ƽ��ʵ��</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public ReentrantLock() &#123;</span><br><span class="line">    sync = new NonfairSync();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Creates an instance of &#123;@code ReentrantLock&#125; with the</span><br><span class="line"> * given fairness policy.</span><br><span class="line"> *</span><br><span class="line"> * @param fair &#123;@code true&#125; if this lock should use a fair ordering policy</span><br><span class="line"> */</span><br><span class="line">public ReentrantLock(boolean fair) &#123;</span><br><span class="line">    sync = fair ? new FairSync() : new NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>本章主要介绍独享模式相关源码</p>
+<h2 id="1-0-Node"><a href="#1-0-Node" class="headerlink" title="1.0 Node"></a>1.0 Node</h2><p>节点共有两种模式及五种状态。<br>两种模式：</p>
+<ol>
+<li>独享模式</li>
+<li>共享模式</li>
+</ol>
+<p>五种状态：</p>
+<ol>
+<li>0 当头节点线程release后，会被置为此状态</li>
+<li>SIGNAL -1：当后继节点要被阻塞前，会把前驱节点设置该状态。当release时，发现节点处于该状态时，会唤醒后续节点</li>
+<li>CONDITION -2：意味着该线程正在一个条件上等待，当来到等待队列时，（该状态与0等价处理？）</li>
+<li>PROPAGATE -3：共享模式下使用</li>
+<li>CANCELED 1：当节点上的线程被中断后，会被置为此状态。</li></ol>
         
       
 
@@ -173,15 +184,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Դ��</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ReentrantLock</a>
         		</li>
       		
 		</ul>
@@ -202,7 +209,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/">展开全文 >></a>
         </p>
       
 
@@ -232,19 +239,19 @@
 
 
   
-    <article id="post-JavaConcurrency/AQS源码阅读 -- 独占模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/">AQSԴ��</a>
+      <a class="article-title" href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/">ReentrantLock源码（一） -- Sync和Lock</a>
     </h1>
   
 
         
-        <a href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/" class="archive-article-date">
+        <a href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/" class="archive-article-date">
   	<time datetime="2019-03-16T13:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-16</time>
 </a>
         
@@ -252,19 +259,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>������Ҫ���ܶ���ģʽ���Դ��</p>
-<h2 id="1-0-Node"><a href="#1-0-Node" class="headerlink" title="1.0 Node"></a>1.0 Node</h2><p>�ڵ㹲������ģʽ������״̬��<br>����ģʽ��</p>
-<ol>
-<li>����ģʽ</li>
-<li>����ģʽ</li>
-</ol>
-<p>����״̬��</p>
-<ol>
-<li>0 ��ͷ�ڵ��߳�release�󣬻ᱻ��Ϊ��״̬</li>
-<li>SIGNAL -1������̽ڵ�Ҫ������ǰ�����ǰ���ڵ����ø�״̬����releaseʱ�����ֽڵ㴦�ڸ�״̬ʱ���ỽ�Ѻ����ڵ�</li>
-<li>CONDITION -2����ζ�Ÿ��߳�����һ�������ϵȴ����������ȴ�����ʱ������״̬��0�ȼ۴�������</li>
-<li>PROPAGATE -3������ģʽ��ʹ��</li>
-<li>CANCELED 1�����ڵ��ϵ��̱߳��жϺ󣬻ᱻ��Ϊ��״̬��</li></ol>
+        <h2 id="1-0-Lock"><a href="#1-0-Lock" class="headerlink" title="1.0 Lock"></a>1.0 Lock</h2><p>ReentrantLock类的Lock锁的使用都基于Sync实现，默认情况下使用非公平锁实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public ReentrantLock() &#123;</span><br><span class="line">    sync = new NonfairSync();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Creates an instance of &#123;@code ReentrantLock&#125; with the</span><br><span class="line"> * given fairness policy.</span><br><span class="line"> *</span><br><span class="line"> * @param fair &#123;@code true&#125; if this lock should use a fair ordering policy</span><br><span class="line"> */</span><br><span class="line">public ReentrantLock(boolean fair) &#123;</span><br><span class="line">    sync = fair ? new FairSync() : new NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         
       
 
@@ -278,11 +274,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Դ��</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ReentrantLock</a>
         		</li>
       		
 		</ul>
@@ -303,7 +303,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/16/JavaConcurrency/AQS源码阅读 -- 独占模式/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/">展开全文 >></a>
         </p>
       
 
@@ -463,11 +463,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
@@ -691,11 +691,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
@@ -787,11 +787,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
@@ -1371,7 +1371,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Դ��</a>
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">绪论</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1383,27 +1399,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">绪论</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
             
             <div class="clearfix"></div>
