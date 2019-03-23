@@ -6,24 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>HotSpot虚拟机对象探秘 | Your Thoughts</title>
+  <title>AQSԴ���Ķ������� -- ����ģʽ | Your Thoughts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、对象的创建 在语言层面上，创建对象（如克隆，反序列化）通常仅仅是一个new关键字而已，而在虚拟机中，对象（普通Java对象，不包括数组和Class对象）的创建过程如下：  虚拟机首先去检查这个指令的参数是否能在常量池中定位到一个类的引用符号，并且检查该符号引用代表的类是否已经被加载、解析和初始化过。若没有则执行类加载过程  虚拟机为新生对象分配内存（对象所需内存大小在类加载的阶段便可以完全确">
-<meta name="keywords" content="JVM,自动内存管理机制">
+  <meta name="description" content="1.0 Acquire1.1 acquireShared(int arg)���ռģʽʵ�����ƣ������û�ȡstate�����෽����ΪtryAcquireShared()����һ�����ǣ���ռģʽ�£����ɹ���ȡstate֮�󣬽��Ὣ��ǰ�ڵ�����Ϊhead����ִ�����״̬���Ĳ��������ڹ���ģʽ�£�����ִ�������ռģʽ�¶�h">
+<meta name="keywords" content="Դ��,AQS,����ģʽ">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HotSpot虚拟机对象探秘">
-<meta property="og:url" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/index.html">
+<meta property="og:title" content="AQSԴ���Ķ������� -- ����ģʽ">
+<meta property="og:url" content="http://yoursite.com/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/index.html">
 <meta property="og:site_name" content="Your Thoughts">
-<meta property="og:description" content="一、对象的创建 在语言层面上，创建对象（如克隆，反序列化）通常仅仅是一个new关键字而已，而在虚拟机中，对象（普通Java对象，不包括数组和Class对象）的创建过程如下：  虚拟机首先去检查这个指令的参数是否能在常量池中定位到一个类的引用符号，并且检查该符号引用代表的类是否已经被加载、解析和初始化过。若没有则执行类加载过程  虚拟机为新生对象分配内存（对象所需内存大小在类加载的阶段便可以完全确">
+<meta property="og:description" content="1.0 Acquire1.1 acquireShared(int arg)���ռģʽʵ�����ƣ������û�ȡstate�����෽����ΪtryAcquireShared()����һ�����ǣ���ռģʽ�£����ɹ���ȡstate֮�󣬽��Ὣ��ǰ�ڵ�����Ϊhead����ִ�����״̬���Ĳ��������ڹ���ģʽ�£�����ִ�������ռģʽ�¶�h">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/1ac09cc8775ff465e010e38017c7253c.png">
-<meta property="og:image" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/cdc7cab8f85664d58f7a3a507af8bc82.png">
-<meta property="og:image" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/a04418754c2d85345aeeae7b9785982c.png">
-<meta property="og:updated_time" content="2019-02-16T20:01:44.948Z">
+<meta property="og:updated_time" content="2019-03-23T21:07:31.683Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HotSpot虚拟机对象探秘">
-<meta name="twitter:description" content="一、对象的创建 在语言层面上，创建对象（如克隆，反序列化）通常仅仅是一个new关键字而已，而在虚拟机中，对象（普通Java对象，不包括数组和Class对象）的创建过程如下：  虚拟机首先去检查这个指令的参数是否能在常量池中定位到一个类的引用符号，并且检查该符号引用代表的类是否已经被加载、解析和初始化过。若没有则执行类加载过程  虚拟机为新生对象分配内存（对象所需内存大小在类加载的阶段便可以完全确">
-<meta name="twitter:image" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/1ac09cc8775ff465e010e38017c7253c.png">
+<meta name="twitter:title" content="AQSԴ���Ķ������� -- ����ģʽ">
+<meta name="twitter:description" content="1.0 Acquire1.1 acquireShared(int arg)���ռģʽʵ�����ƣ������û�ȡstate�����෽����ΪtryAcquireShared()����һ�����ǣ���ռģʽ�£����ɹ���ȡstate֮�󣬽��Ὣ��ǰ�ڵ�����Ϊhead����ִ�����״̬���Ĳ��������ڹ���ģʽ�£�����ִ�������ռģʽ�¶�h">
   
     <link rel="alternative" href="/atom.xml" title="Your Thoughts" type="application/atom+xml">
   
@@ -145,67 +141,44 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-JVM/HotSpot_virtual_machine_object" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-JavaConcurrency/AQS源码阅读（三） -- 共享模式" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      HotSpot虚拟机对象探秘
+      AQSԴ���Ķ������� -- ����ģʽ
     </h1>
   
 
         
-        <a href="/2018/04/17/JVM/HotSpot_virtual_machine_object/" class="archive-article-date">
-  	<time datetime="2018-04-16T17:19:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-17</time>
+        <a href="/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/" class="archive-article-date">
+  	<time datetime="2019-03-23T21:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/2018/04/17/JVM/HotSpot_virtual_machine_object/1ac09cc8775ff465e010e38017c7253c.png" alt="clipboard.png"></p>
-<p><strong>一、对象的创建</strong></p>
-<p>在语言层面上，创建对象（如克隆，反序列化）通常仅仅是一个new关键字而已，而在虚拟机中，对象（普通Java对象，不包括数组和Class对象）的创建过程如下：</p>
-<ol>
-<li><p>虚拟机首先去检查这个指令的参数是否能在<strong>常量池</strong>中定位到一个<strong>类的引用符号</strong>，并且检查该符号引用代表的类是否已经被加载、解析和初始化过。若没有则执行类加载过程</p>
-</li>
-<li><p>虚拟机为新生对象分配内存（对象所需内存大小在类加载的阶段便可以完全确定）</p>
-<p>(1)指针碰撞分配（Bump The Pointer）：堆内存是绝对规整的，用过的放一边，空闲的放另外一边，中间放一个指针作为分界点的指示器，每次分配内存就仅仅是把指针向空闲空间那边挪动一段与对象大小相等的距离。</p>
-<p>(2)空闲列表（Free List）：堆内存不是规整的，使用和未使用的内存相互交错，虚拟机维护一个列表，记录哪些内存可用和不可用</p>
-<p>(3)选择那种方法由Java堆是否规整决定，堆内存是否规整又根据垃圾收集器是否具有压缩整理功能决定。</p>
-</li>
-</ol>
-<p>3.内存分配完成后，虚拟机需要将分配到的内存空间都初始化为零值（不包括对象头）</p>
-<pre><code>(1)这一操作保证了对象的实例字段在Java代码中不赋初值就可以使用
-
-(2)如果使用TLAB，这一工作可以提前至TLAB分配时进行。
-</code></pre><p>4.虚拟机对对象进行必要的设置</p>
-<pre><code>如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的GC分代年龄等信息，这些信息存放在ObjectHeader之中
-</code></pre><p>上述步骤完成后，虚拟机视角的对象创建就完成了，但从Java程序的角度来看，对象创建才刚刚开始–\&lt;init>方法还没有执行，所有字段还都为零。</p>
+        <h2 id="1-0-Acquire"><a href="#1-0-Acquire" class="headerlink" title="1.0 Acquire"></a>1.0 Acquire</h2><h3 id="1-1-acquireShared-int-arg"><a href="#1-1-acquireShared-int-arg" class="headerlink" title="1.1 acquireShared(int arg)"></a>1.1 acquireShared(int arg)</h3><p>���ռģʽʵ�����ƣ������û�ȡstate�����෽����ΪtryAcquireShared()<br>����һ�����ǣ���ռģʽ�£����ɹ���ȡstate֮�󣬽��Ὣ��ǰ�ڵ�����Ϊhead����ִ�����״̬���Ĳ�����<br>���ڹ���ģʽ�£�����ִ�������ռģʽ�¶�head����ز����⣬����doReleaseShareȥ���Ի��Ѹýڵ�ĺ�̽ڵ�</p>
 <a id="more"></a>
-<p><strong>二、对象的内存布局</strong></p>
-<p>对象在内存中的存储布局可以分为三块区域：<strong>对象头（Header）</strong>、<strong>实例数据（Instance<br>Data）</strong>和<strong>对齐填充（Padding）</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">public final void acquireShared(int arg) &#123;</span><br><span class="line">    if (tryAcquireShared(arg) &lt; 0)</span><br><span class="line">        doAcquireShared(arg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void doAcquireShared(int arg) &#123;</span><br><span class="line">    //���ӵ��ȴ������У��ȿ��ٲ���-&gt;��ʧ�ܵ���enqѭ������</span><br><span class="line">    final Node node = addWaiter(Node.SHARED);</span><br><span class="line">    boolean failed = true;</span><br><span class="line">    try &#123;</span><br><span class="line">        boolean interrupted = false;</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            final Node p = node.predecessor();</span><br><span class="line">            if (p == head) &#123;</span><br><span class="line">                //ȡ��acquire ��ʣ���state</span><br><span class="line">                int r = tryAcquireShared(arg);</span><br><span class="line">                if (r &gt;= 0) &#123;</span><br><span class="line">                    //��ȡ�ɹ�����ͷ�����Ϊ��ǰ��ȡ���ڵ㲢��r����</span><br><span class="line">                    setHeadAndPropagate(node, r);</span><br><span class="line">                    p.next = null; // help GC</span><br><span class="line">                    if (interrupted)</span><br><span class="line">                        selfInterrupt();</span><br><span class="line">                    failed = false;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            //(shouldParkAfterFailedAcquire(p, node)���Խ�ǰ�̽ڵ��״̬����ΪSIGNAL����ǰ�̽ڵ�Ƿ��������������Ƴ����У���ǰ�̽ڵ��Ѿ�ΪSIGNAL���򷵻�true�������������false</span><br><span class="line">            // ��ǰ��ķ�������trueʱ��parkAndCheckInterrupt()�ᵱǰ�߳̽�������������ʱ�����ж�״̬</span><br><span class="line">            if (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</span><br><span class="line">                parkAndCheckInterrupt())</span><br><span class="line">                interrupted = true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        if (failed)</span><br><span class="line">            cancelAcquire(node);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">private void setHeadAndPropagate(Node node, int propagate) &#123;</span><br><span class="line">    Node h = head; // Record old head for check below</span><br><span class="line">    setHead(node);</span><br><span class="line">    /*</span><br><span class="line">     * Try to signal next queued node if:</span><br><span class="line">     *   Propagation was indicated by caller,</span><br><span class="line">     *     or was recorded (as h.waitStatus either before</span><br><span class="line">     *     or after setHead) by a previous operation</span><br><span class="line">     *     (note: this uses sign-check of waitStatus because</span><br><span class="line">     *      PROPAGATE status may transition to SIGNAL.)</span><br><span class="line">     * and</span><br><span class="line">     *   The next node is waiting in shared mode,</span><br><span class="line">     *     or we don&apos;t know, because it appears null</span><br><span class="line">     *</span><br><span class="line">     * The conservatism in both of these checks may cause</span><br><span class="line">     * unnecessary wake-ups, but only when there are multiple</span><br><span class="line">     * racing acquires/releases, so most need signals now or soon</span><br><span class="line">     * anyway.</span><br><span class="line">     */</span><br><span class="line">     //propagate&gt;0 ������ʣ���state���Թ�����ȡ</span><br><span class="line">     //h==null ���״���Ƿ��п��ܳ��֣��Ѿ����ù�setHead Ӧ���ǲ���������������ģ���Ϊ������������������ô�����h.waitStatus���ǲ���ȫ��  �����׳��쳣���ᵼ�½ڵ��ȡ��</span><br><span class="line">     //h.waitStatus &lt; 0 ��ʾ���к����ڵ���Ҫ������</span><br><span class="line">     // (h = head) ���µ�ͷ�������жϣ�����Ϊ�ɽڵ㣬�������������һ��ͷ�������������½ڵ㣬��statusû�б���ΪSIGNAL����ô�Ͳ���ִ��doReleaseShard()</span><br><span class="line">     //��������������������Ӧ���ǣ�</span><br><span class="line">     //��propageteΪ0��h��waitStatus&gt;=0 ��ô�ٿ�����ǰʱ�̵�head��waitStatus�Ƿ�Ҳ&gt;=0�ǣ����˳�</span><br><span class="line">     //���򣬵��� doReleaseShared()���Ի����µ��̣߳��µ��߳���tryAcquireShare()�ɹ����Ի�������������</span><br><span class="line">    if (propagate &gt; 0 || h == null || h.waitStatus &lt; 0 ||</span><br><span class="line">        (h = head) == null || h.waitStatus &lt; 0) &#123;</span><br><span class="line">        Node s = node.next;</span><br><span class="line">        if (s == null || s.isShared())</span><br><span class="line">            doReleaseShared();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>setHeadAndPropagate() �ڻ�������ȥ���� doReleaseShared()��������ֶ���̶߳���ִ��doReleaseShared()��<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">private void doReleaseShared() &#123;</span><br><span class="line">    /*</span><br><span class="line">     * Ensure that a release propagates, even if there are other</span><br><span class="line">     * in-progress acquires/releases.  This proceeds in the usual</span><br><span class="line">     * way of trying to unparkSuccessor of head if it needs</span><br><span class="line">     * signal. But if it does not, status is set to PROPAGATE to</span><br><span class="line">     * ensure that upon release, propagation continues.</span><br><span class="line">     * Additionally, we must loop in case a new node is added</span><br><span class="line">     * while we are doing this. Also, unlike other uses of</span><br><span class="line">     * unparkSuccessor, we need to know if CAS to reset status</span><br><span class="line">     * fails, if so rechecking.</span><br><span class="line">     */</span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        Node h = head;</span><br><span class="line">        if (h != null &amp;&amp; h != tail) &#123;</span><br><span class="line">            int ws = h.waitStatus;</span><br><span class="line">            if (ws == Node.SIGNAL) &#123;</span><br><span class="line">                //ʧ�ܱ�����ͷ�ڵ��Ѿ����»��ѵ��߳����滻�����continue</span><br><span class="line">                if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))</span><br><span class="line">                    continue;            // loop to recheck cases</span><br><span class="line">                unparkSuccessor(h);</span><br><span class="line">            &#125;</span><br><span class="line">            else if (ws == 0 &amp;&amp;</span><br><span class="line">                     !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))</span><br><span class="line">                continue;                // loop on failed CAS</span><br><span class="line">        &#125;</span><br><span class="line">        //����ִ�������ϲ���head��û�䣬�����Ѿ������㹻���̣߳�����Ҫ�ٻ���</span><br><span class="line">        if (h == head)                   // loop if head changed</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>����������ҳɹ����stated���߳̿���ͬʱ��ִ��doReleaseShared()�����Ƕ��ڻ����Ļ����߳� �����ֲ������޵ػ��ѣ���ô������Ŀ�ģ�������Ϊ�˾�����������shared��state�����������ܵ�ͬʱִ�С�  ��ֱ������head��ѭ����ʼǰ��headһ�����Ų������ԡ�</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">private void unparkSuccessor(Node node) &#123;</span><br><span class="line">    /*</span><br><span class="line">     * If status is negative (i.e., possibly needing signal) try</span><br><span class="line">     * to clear in anticipation of signalling.  It is OK if this</span><br><span class="line">     * fails or if status is changed by waiting thread.</span><br><span class="line">     */</span><br><span class="line">    int ws = node.waitStatus;</span><br><span class="line">    if (ws &lt; 0)</span><br><span class="line">        compareAndSetWaitStatus(node, ws, 0);</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * Thread to unpark is held in successor, which is normally</span><br><span class="line">     * just the next node.  But if cancelled or apparently null,</span><br><span class="line">     * traverse backwards from tail to find the actual</span><br><span class="line">     * non-cancelled successor.</span><br><span class="line">     */</span><br><span class="line">    Node s = node.next;</span><br><span class="line">    if (s == null || s.waitStatus &gt; 0) &#123;</span><br><span class="line">        s = null;</span><br><span class="line">        for (Node t = tail; t != null &amp;&amp; t != node; t = t.prev)</span><br><span class="line">            if (t.waitStatus &lt;= 0)</span><br><span class="line">                s = t;</span><br><span class="line">    &#125;</span><br><span class="line">    if (s != null)</span><br><span class="line">        LockSupport.unpark(s.thread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-acquireSharedInterruptibly-int-arg"><a href="#1-2-acquireSharedInterruptibly-int-arg" class="headerlink" title="1.2 acquireSharedInterruptibly(int arg)"></a>1.2 acquireSharedInterruptibly(int arg)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public final void acquireSharedInterruptibly(int arg)</span><br><span class="line">        throws InterruptedException &#123;</span><br><span class="line">    if (Thread.interrupted())</span><br><span class="line">        throw new InterruptedException();</span><br><span class="line">    if (tryAcquireShared(arg) &lt; 0)</span><br><span class="line">        doAcquireSharedInterruptibly(arg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-3-tryAcquireSharedNanos-int-arg-long-nanosTimeout"><a href="#1-3-tryAcquireSharedNanos-int-arg-long-nanosTimeout" class="headerlink" title="1.3  tryAcquireSharedNanos(int arg, long nanosTimeout)"></a>1.3  tryAcquireSharedNanos(int arg, long nanosTimeout)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> public final boolean tryAcquireSharedNanos(int arg, long nanosTimeout)</span><br><span class="line">        throws InterruptedException &#123;</span><br><span class="line">    if (Thread.interrupted())</span><br><span class="line">        throw new InterruptedException();</span><br><span class="line">    return tryAcquireShared(arg) &gt;= 0 ||</span><br><span class="line">        doAcquireSharedNanos(arg, nanosTimeout);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-4-�ܽ�"><a href="#1-4-�ܽ�" class="headerlink" title="1.4 �ܽ�"></a>1.4 �ܽ�</h3><pre><code>sharedģʽ�£���ȡ��exclusiveģʽ�³��˵������෽��tryAcquireXXX��setHeadXXX������ͬ�⣬�����߼���������������ܶ඼�ǵ�����ͬ�ķ�����
+</code></pre><p>ÿ��ʱ��ֻ����һ��head �ڵ㣬�����ж���̱߳����ѣ��Լ�����С�ڵ������ɹ���state�����߳���ִ�� doReleaseShared()�������������������</p>
 <ol>
-<li><p><strong>对象头：</strong>分两部分信息</p>
-<p> (1) Mark Word：存储对象自身的运行时数据，如哈希码、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等，长度为32bit（32位虚拟机）或64bit（64位虚拟机）</p>
-<p> (2)类型指针：对象指向它的类元数据的指针（并不是所有的虚拟机实现都必须在对象数据上保留类型指针，也就是说查找对象的元数据信息并不一定要经过对象本身）。</p>
-<p> (3)若对象是一个Java数组，那在对象头还需要有一块记录数组长度的数据，因为虚拟机可以通过普通Java对象的元数据信息确定Java对象的大小，但从数组的元数据中却无法确定数组的大小</p>
-</li>
-<li><p><strong>实例数据：</strong>对象真正存储的有效信息，无论是从父类继承下来的或是子类中定义的。</p>
-</li>
-<li><p><strong>对齐填充：</strong>并不必然存在，无特别的含义，仅起占位作用。</p>
-</li>
+<li>������++1����tryAcquireShared()++ �ɹ����state���ֵ���setHeadAndPropagate()���ڵ�ͷ�����ں����ڵ����ʣ��stateʱ������doReleaseShared()��  </li>
+<li>�ڸ÷�����һ��ѭ���У���head�ڵ㲻Ϊnull���Ҳ�����tail������£������unparkSuccessor()����head�ĺ�̽ڵ㡣  </li>
+<li>unparkSuccessor()�÷����лὫ��ǰͷ�ڵ��״̬��Ϊ0�����ҵ��µĽڵ㱻���Ѻ�����ǰ�̽ڵ���head���᳢�Ի��state�����ɹ���ã���Ὣ��ǰ�ڵ�����Ϊͷ��������������1 �ĵط�ѭ��ִ�У�ֱ��û���ܳɹ�acquire()���̡߳�   </li>
+<li>��ʱ���ͻ��������߳�ͬʱ���У�ֻ������head�ڵ�ֻ��һ������ǰ����Ǹ�head�ڵ����Ѿ���ʧ��</li>
 </ol>
-<p><strong>三、对象访问定位</strong></p>
-<p>主流的访问方式有使用句柄和直接指针两种方法。<strong>Sun HotSpot使用的是直接指针。</strong></p>
-<p>（1）句柄访问：Java堆中会划分出一块内存作为句柄池，reference中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息</p>
-<p><img src="/2018/04/17/JVM/HotSpot_virtual_machine_object/cdc7cab8f85664d58f7a3a507af8bc82.png" alt="IMG_256"></p>
-<p>（2）直接指针：reference中存储的直接就是对象地址</p>
-<p><img src="/2018/04/17/JVM/HotSpot_virtual_machine_object/a04418754c2d85345aeeae7b9785982c.png" alt></p>
-<p>使用句柄来访问的最大好处就是reference中存储的是稳定的句柄地址，在对象被移动时只会改变句柄中的实例数据指针，而reference本身不需要修改</p>
-<p>使用直接访问的最大好处就是速度更快，它节省了一次指针定位的时间开销，由于对象的访问在Java中非常频繁，因此这类开销积少成多后也是一项非常可观的执行成本。</p>
+<h2 id="2-0-Release"><a href="#2-0-Release" class="headerlink" title="2.0 Release"></a>2.0 Release</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public final boolean releaseShared(int arg) &#123;</span><br><span class="line">    //�������෽��release�ɹ��󣬵���doReleaseShared()�������߼���������������</span><br><span class="line">    if (tryReleaseShared(arg)) &#123;</span><br><span class="line">        doReleaseShared();</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
 
@@ -219,11 +192,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Դ��</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动内存管理机制</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">����ģʽ</a>
         		</li>
       		
 		</ul>
@@ -235,7 +212,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/JVM//" class="article-tag-list-link color4">JVM</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -290,7 +267,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -304,18 +281,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/02/24/Netty/netty01/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Netty源码阅读笔记（一）
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/04/12/mysql/mysql05_02/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">创建高性能的索引（二）</div>
+    <a href="/2019/03/17/JavaConcurrency/AQS源码阅读（二） -- Condition/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">AQS源码阅读（二） -- Condition</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -342,7 +310,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    目录，不存在的…
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-0-Acquire"><span class="toc-number">1.</span> <span class="toc-text">1.0 Acquire</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-acquireShared-int-arg"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 acquireShared(int arg)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-acquireSharedInterruptibly-int-arg"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 acquireSharedInterruptibly(int arg)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-tryAcquireSharedNanos-int-arg-long-nanosTimeout"><span class="toc-number">1.3.</span> <span class="toc-text">1.3  tryAcquireSharedNanos(int arg, long nanosTimeout)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-�ܽ�"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 �ܽ�</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-0-Release"><span class="toc-number">2.</span> <span class="toc-text">2.0 Release</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -359,8 +327,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/", 
-    sourceId: "JVM/HotSpot_virtual_machine_object",
+    url: "http://yoursite.com/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/", 
+    sourceId: "JavaConcurrency/AQS源码阅读（三） -- 共享模式",
     productKey: "true",
     target: "cloud-tie-wrapper"
   };

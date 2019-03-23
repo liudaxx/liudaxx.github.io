@@ -138,6 +138,125 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql/mysql05_01" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/03/mysql/mysql05_01/">创建高性能的索引（一）</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/03/mysql/mysql05_01/" class="archive-article-date">
+  	<time datetime="2018-04-02T16:35:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/2018/04/03/mysql/mysql05_01/20180417011343.png" alt></p>
+<h2 id="5-0-索引的数据结构"><a href="#5-0-索引的数据结构" class="headerlink" title="5.0 索引的数据结构"></a>5.0 索引的数据结构</h2><h3 id="平衡多路查找树（B-Tree）："><a href="#平衡多路查找树（B-Tree）：" class="headerlink" title="平衡多路查找树（B-Tree）："></a>平衡多路查找树（B-Tree）：</h3><blockquote>
+<p>  一棵m阶的B-Tree有如下特性： </p>
+</blockquote>
+<blockquote>
+<p>  每个节点最多有m个孩子。 </p>
+</blockquote>
+<blockquote>
+<p>  除了根节点和叶子节点外，其它每个节点至少有Ceil(m/2)个孩子。 </p>
+</blockquote>
+<blockquote>
+<p>  若根节点不是叶子节点，则至少有2个孩子 </p>
+</blockquote>
+<blockquote>
+<p>  所有叶子节点都在同一层，且不包含其它关键字信息 </p>
+</blockquote>
+<blockquote>
+<p>  每个非终端节点包含n个关键字信息（P0,P1,…Pn, k1,…kn） </p>
+</blockquote>
+<blockquote>
+<p>  关键字的个数n满足：ceil(m/2)-1 \&lt;= n \&lt;= m-1 </p>
+</blockquote>
+<blockquote>
+<p>  ki(i=1,…n)为关键字，且关键字升序排序。 </p>
+</blockquote>
+<blockquote>
+<p>  Pi(i=1,…n)为指向子树根节点的指针。P(i-1)指向的子树的所有节点关键字均小于ki，但都大于k(i-1)</p>
+</blockquote>
+<blockquote>
+<p>  B-Tree中的每个节点根据实际情况可以包含大量的关键字信息和分支，如下图所示为一个3阶的B-Tree： </p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">索引</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/03/mysql/mysql05_01/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-mysql/mysql04" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -454,11 +573,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+                <a href="javascript:void(0)" class="js-tag color4">Դ��</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -466,11 +581,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ReentrantLock</a>
+                <a href="javascript:void(0)" class="js-tag color2">����ģʽ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ReentrantLock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -478,7 +605,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
               </li>
             
             <div class="clearfix"></div>

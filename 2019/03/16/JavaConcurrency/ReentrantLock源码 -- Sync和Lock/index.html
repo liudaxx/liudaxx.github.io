@@ -6,24 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>HotSpot虚拟机对象探秘 | Your Thoughts</title>
+  <title>ReentrantLock源码 -- Sync和Lock | Your Thoughts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、对象的创建 在语言层面上，创建对象（如克隆，反序列化）通常仅仅是一个new关键字而已，而在虚拟机中，对象（普通Java对象，不包括数组和Class对象）的创建过程如下：  虚拟机首先去检查这个指令的参数是否能在常量池中定位到一个类的引用符号，并且检查该符号引用代表的类是否已经被加载、解析和初始化过。若没有则执行类加载过程  虚拟机为新生对象分配内存（对象所需内存大小在类加载的阶段便可以完全确">
-<meta name="keywords" content="JVM,自动内存管理机制">
+  <meta name="description" content="1.0 LockReentrantLock类的Lock锁的使用都基于Sync实现，默认情况下使用非公平锁实现 12345678910111213public ReentrantLock() &amp;#123;    sync = new NonfairSync();&amp;#125;/** * Creates an instance of &amp;#123;@code ReentrantLock&amp;#125; wit">
+<meta name="keywords" content="AQS,源码,ReentrantLock">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HotSpot虚拟机对象探秘">
-<meta property="og:url" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/index.html">
+<meta property="og:title" content="ReentrantLock源码 -- Sync和Lock">
+<meta property="og:url" content="http://yoursite.com/2019/03/16/JavaConcurrency/ReentrantLock源码 -- Sync和Lock/index.html">
 <meta property="og:site_name" content="Your Thoughts">
-<meta property="og:description" content="一、对象的创建 在语言层面上，创建对象（如克隆，反序列化）通常仅仅是一个new关键字而已，而在虚拟机中，对象（普通Java对象，不包括数组和Class对象）的创建过程如下：  虚拟机首先去检查这个指令的参数是否能在常量池中定位到一个类的引用符号，并且检查该符号引用代表的类是否已经被加载、解析和初始化过。若没有则执行类加载过程  虚拟机为新生对象分配内存（对象所需内存大小在类加载的阶段便可以完全确">
+<meta property="og:description" content="1.0 LockReentrantLock类的Lock锁的使用都基于Sync实现，默认情况下使用非公平锁实现 12345678910111213public ReentrantLock() &amp;#123;    sync = new NonfairSync();&amp;#125;/** * Creates an instance of &amp;#123;@code ReentrantLock&amp;#125; wit">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/1ac09cc8775ff465e010e38017c7253c.png">
-<meta property="og:image" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/cdc7cab8f85664d58f7a3a507af8bc82.png">
-<meta property="og:image" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/a04418754c2d85345aeeae7b9785982c.png">
-<meta property="og:updated_time" content="2019-02-16T20:01:44.948Z">
+<meta property="og:updated_time" content="2019-03-17T11:42:29.290Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HotSpot虚拟机对象探秘">
-<meta name="twitter:description" content="一、对象的创建 在语言层面上，创建对象（如克隆，反序列化）通常仅仅是一个new关键字而已，而在虚拟机中，对象（普通Java对象，不包括数组和Class对象）的创建过程如下：  虚拟机首先去检查这个指令的参数是否能在常量池中定位到一个类的引用符号，并且检查该符号引用代表的类是否已经被加载、解析和初始化过。若没有则执行类加载过程  虚拟机为新生对象分配内存（对象所需内存大小在类加载的阶段便可以完全确">
-<meta name="twitter:image" content="http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/1ac09cc8775ff465e010e38017c7253c.png">
+<meta name="twitter:title" content="ReentrantLock源码 -- Sync和Lock">
+<meta name="twitter:description" content="1.0 LockReentrantLock类的Lock锁的使用都基于Sync实现，默认情况下使用非公平锁实现 12345678910111213public ReentrantLock() &amp;#123;    sync = new NonfairSync();&amp;#125;/** * Creates an instance of &amp;#123;@code ReentrantLock&amp;#125; wit">
   
     <link rel="alternative" href="/atom.xml" title="Your Thoughts" type="application/atom+xml">
   
@@ -145,67 +141,41 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-JVM/HotSpot_virtual_machine_object" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-JavaConcurrency/ReentrantLock源码 -- Sync和Lock" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      HotSpot虚拟机对象探秘
+      ReentrantLock源码 -- Sync和Lock
     </h1>
   
 
         
-        <a href="/2018/04/17/JVM/HotSpot_virtual_machine_object/" class="archive-article-date">
-  	<time datetime="2018-04-16T17:19:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-17</time>
+        <a href="/2019/03/16/JavaConcurrency/ReentrantLock源码 -- Sync和Lock/" class="archive-article-date">
+  	<time datetime="2019-03-16T13:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-16</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/2018/04/17/JVM/HotSpot_virtual_machine_object/1ac09cc8775ff465e010e38017c7253c.png" alt="clipboard.png"></p>
-<p><strong>一、对象的创建</strong></p>
-<p>在语言层面上，创建对象（如克隆，反序列化）通常仅仅是一个new关键字而已，而在虚拟机中，对象（普通Java对象，不包括数组和Class对象）的创建过程如下：</p>
-<ol>
-<li><p>虚拟机首先去检查这个指令的参数是否能在<strong>常量池</strong>中定位到一个<strong>类的引用符号</strong>，并且检查该符号引用代表的类是否已经被加载、解析和初始化过。若没有则执行类加载过程</p>
-</li>
-<li><p>虚拟机为新生对象分配内存（对象所需内存大小在类加载的阶段便可以完全确定）</p>
-<p>(1)指针碰撞分配（Bump The Pointer）：堆内存是绝对规整的，用过的放一边，空闲的放另外一边，中间放一个指针作为分界点的指示器，每次分配内存就仅仅是把指针向空闲空间那边挪动一段与对象大小相等的距离。</p>
-<p>(2)空闲列表（Free List）：堆内存不是规整的，使用和未使用的内存相互交错，虚拟机维护一个列表，记录哪些内存可用和不可用</p>
-<p>(3)选择那种方法由Java堆是否规整决定，堆内存是否规整又根据垃圾收集器是否具有压缩整理功能决定。</p>
-</li>
-</ol>
-<p>3.内存分配完成后，虚拟机需要将分配到的内存空间都初始化为零值（不包括对象头）</p>
-<pre><code>(1)这一操作保证了对象的实例字段在Java代码中不赋初值就可以使用
-
-(2)如果使用TLAB，这一工作可以提前至TLAB分配时进行。
-</code></pre><p>4.虚拟机对对象进行必要的设置</p>
-<pre><code>如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的GC分代年龄等信息，这些信息存放在ObjectHeader之中
-</code></pre><p>上述步骤完成后，虚拟机视角的对象创建就完成了，但从Java程序的角度来看，对象创建才刚刚开始–\&lt;init>方法还没有执行，所有字段还都为零。</p>
+        <h2 id="1-0-Lock"><a href="#1-0-Lock" class="headerlink" title="1.0 Lock"></a>1.0 Lock</h2><p>ReentrantLock类的Lock锁的使用都基于Sync实现，默认情况下使用非公平锁实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public ReentrantLock() &#123;</span><br><span class="line">    sync = new NonfairSync();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Creates an instance of &#123;@code ReentrantLock&#125; with the</span><br><span class="line"> * given fairness policy.</span><br><span class="line"> *</span><br><span class="line"> * @param fair &#123;@code true&#125; if this lock should use a fair ordering policy</span><br><span class="line"> */</span><br><span class="line">public ReentrantLock(boolean fair) &#123;</span><br><span class="line">    sync = fair ? new FairSync() : new NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<p><strong>二、对象的内存布局</strong></p>
-<p>对象在内存中的存储布局可以分为三块区域：<strong>对象头（Header）</strong>、<strong>实例数据（Instance<br>Data）</strong>和<strong>对齐填充（Padding）</strong></p>
-<ol>
-<li><p><strong>对象头：</strong>分两部分信息</p>
-<p> (1) Mark Word：存储对象自身的运行时数据，如哈希码、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等，长度为32bit（32位虚拟机）或64bit（64位虚拟机）</p>
-<p> (2)类型指针：对象指向它的类元数据的指针（并不是所有的虚拟机实现都必须在对象数据上保留类型指针，也就是说查找对象的元数据信息并不一定要经过对象本身）。</p>
-<p> (3)若对象是一个Java数组，那在对象头还需要有一块记录数组长度的数据，因为虚拟机可以通过普通Java对象的元数据信息确定Java对象的大小，但从数组的元数据中却无法确定数组的大小</p>
-</li>
-<li><p><strong>实例数据：</strong>对象真正存储的有效信息，无论是从父类继承下来的或是子类中定义的。</p>
-</li>
-<li><p><strong>对齐填充：</strong>并不必然存在，无特别的含义，仅起占位作用。</p>
-</li>
-</ol>
-<p><strong>三、对象访问定位</strong></p>
-<p>主流的访问方式有使用句柄和直接指针两种方法。<strong>Sun HotSpot使用的是直接指针。</strong></p>
-<p>（1）句柄访问：Java堆中会划分出一块内存作为句柄池，reference中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息</p>
-<p><img src="/2018/04/17/JVM/HotSpot_virtual_machine_object/cdc7cab8f85664d58f7a3a507af8bc82.png" alt="IMG_256"></p>
-<p>（2）直接指针：reference中存储的直接就是对象地址</p>
-<p><img src="/2018/04/17/JVM/HotSpot_virtual_machine_object/a04418754c2d85345aeeae7b9785982c.png" alt></p>
-<p>使用句柄来访问的最大好处就是reference中存储的是稳定的句柄地址，在对象被移动时只会改变句柄中的实例数据指针，而reference本身不需要修改</p>
-<p>使用直接访问的最大好处就是速度更快，它节省了一次指针定位的时间开销，由于对象的访问在Java中非常频繁，因此这类开销积少成多后也是一项非常可观的执行成本。</p>
+<h3 id="1-1-lock"><a href="#1-1-lock" class="headerlink" title="1.1 lock()"></a>1.1 lock()</h3><p>阻塞获取锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void lock() &#123;</span><br><span class="line">    sync.lock();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-2-lockInterruptibly"><a href="#1-2-lockInterruptibly" class="headerlink" title="1.2 lockInterruptibly()"></a>1.2 lockInterruptibly()</h3><p>当中断时抛出异常获取锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void lockInterruptibly() throws InterruptedException &#123;</span><br><span class="line">    sync.acquireInterruptibly(1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-3-tryLock"><a href="#1-3-tryLock" class="headerlink" title="1.3 tryLock()"></a>1.3 tryLock()</h3><p>无论是否获取锁都快速返回</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public boolean tryLock() &#123;</span><br><span class="line">    return sync.nonfairTryAcquire(1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-4-tryLock-long-timeout-TimeUnit-unit"><a href="#1-4-tryLock-long-timeout-TimeUnit-unit" class="headerlink" title="1.4 tryLock(long timeout, TimeUnit unit)"></a>1.4 tryLock(long timeout, TimeUnit unit)</h3><p>获取不到锁重试+阻塞的时间<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> public boolean tryLock(long timeout, TimeUnit unit)</span><br><span class="line">        throws InterruptedException &#123;</span><br><span class="line">    return sync.tryAcquireNanos(1, unit.toNanos(timeout));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-5-unlock"><a href="#1-5-unlock" class="headerlink" title="1.5 unlock()"></a>1.5 unlock()</h3><p>解锁方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> public void unlock() &#123;</span><br><span class="line">    sync.release(1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-0-Sync"><a href="#2-0-Sync" class="headerlink" title="2.0 Sync"></a>2.0 Sync</h2><p>AQS抽象类的一层封装，ReentrantLock的主要实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">abstract static class Sync extends AbstractQueuedSynchronizer &#123;</span><br><span class="line">        private static final long serialVersionUID = -5179523762034025860L;</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * Performs &#123;@link Lock#lock&#125;. The main reason for subclassing</span><br><span class="line">         * is to allow fast path for nonfair version.</span><br><span class="line">         */</span><br><span class="line">        abstract void lock();</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * Performs non-fair tryLock.  tryAcquire is implemented in</span><br><span class="line">         * subclasses, but both need nonfair try for trylock method.</span><br><span class="line">         */</span><br><span class="line">         /非公平锁的tryAcquire具体实现</span><br><span class="line">        final boolean nonfairTryAcquire(int acquires) &#123;</span><br><span class="line">            final Thread current = Thread.currentThread();</span><br><span class="line">            int c = getState();</span><br><span class="line">            if (c == 0) &#123;</span><br><span class="line">                if (compareAndSetState(0, acquires)) &#123;</span><br><span class="line">                    setExclusiveOwnerThread(current);</span><br><span class="line">                    return true;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            else if (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">                int nextc = c + acquires;</span><br><span class="line">                if (nextc &lt; 0) // overflow</span><br><span class="line">                    throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">                setState(nextc);</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        protected final boolean tryRelease(int releases) &#123;</span><br><span class="line">            int c = getState() - releases;</span><br><span class="line">            if (Thread.currentThread() != getExclusiveOwnerThread())</span><br><span class="line">                throw new IllegalMonitorStateException();</span><br><span class="line">            boolean free = false;</span><br><span class="line">            if (c == 0) &#123;</span><br><span class="line">                free = true;</span><br><span class="line">                setExclusiveOwnerThread(null);</span><br><span class="line">            &#125;</span><br><span class="line">            setState(c);</span><br><span class="line">            return free;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        protected final boolean isHeldExclusively() &#123;</span><br><span class="line">            // While we must in general read state before owner,</span><br><span class="line">            // we don&apos;t need to do so to check if current thread is owner</span><br><span class="line">            return getExclusiveOwnerThread() == Thread.currentThread();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        final ConditionObject newCondition() &#123;</span><br><span class="line">            return new ConditionObject();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // Methods relayed from outer class</span><br><span class="line"></span><br><span class="line">        final Thread getOwner() &#123;</span><br><span class="line">            return getState() == 0 ? null : getExclusiveOwnerThread();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        final int getHoldCount() &#123;</span><br><span class="line">            return isHeldExclusively() ? getState() : 0;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        final boolean isLocked() &#123;</span><br><span class="line">            return getState() != 0;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * Reconstitutes the instance from a stream (that is, deserializes it).</span><br><span class="line">         */</span><br><span class="line">        private void readObject(java.io.ObjectInputStream s)</span><br><span class="line">            throws java.io.IOException, ClassNotFoundException &#123;</span><br><span class="line">            s.defaultReadObject();</span><br><span class="line">            setState(0); // reset to unlocked state</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-1-主要方法"><a href="#2-1-主要方法" class="headerlink" title="2.1 主要方法"></a>2.1 主要方法</h3><h4 id="2-1-1-nonfairTryAcquire-int-acquires"><a href="#2-1-1-nonfairTryAcquire-int-acquires" class="headerlink" title="2.1.1 nonfairTryAcquire(int acquires)"></a>2.1.1 nonfairTryAcquire(int acquires)</h4><p>若state==0，则CAS将acquires设置到state。若当前线程==当前lock的独占线程，表示重入锁，无需CAS直接添加重入数量。若非以上条件，则返回false；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">final boolean nonfairTryAcquire(int acquires) &#123;</span><br><span class="line">    final Thread current = Thread.currentThread();</span><br><span class="line">    int c = getState();</span><br><span class="line">    if (c == 0) &#123;</span><br><span class="line">        if (compareAndSetState(0, acquires)) &#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    else if (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        int nextc = c + acquires;</span><br><span class="line">        if (nextc &lt; 0) // overflow</span><br><span class="line">            throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-1-2-tryRelease-int-releases"><a href="#2-1-2-tryRelease-int-releases" class="headerlink" title="2.1.2 tryRelease(int releases)"></a>2.1.2 tryRelease(int releases)</h4><p>首先判断请求线程是否当前独占线程；若时则判断release后state是否为0，若为0则将lock的独占线程设置为null，并返回true；非以上条件，返回false;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">protected final boolean tryRelease(int releases) &#123;</span><br><span class="line">        int c = getState() - releases;</span><br><span class="line">        if (Thread.currentThread() != getExclusiveOwnerThread())</span><br><span class="line">            throw new IllegalMonitorStateException();</span><br><span class="line">        boolean free = false;</span><br><span class="line">        if (c == 0) &#123;</span><br><span class="line">            free = true;</span><br><span class="line">            setExclusiveOwnerThread(null);</span><br><span class="line">        &#125;</span><br><span class="line">        setState(c);</span><br><span class="line">        return free;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-2-NonfairSync"><a href="#2-2-NonfairSync" class="headerlink" title="2.2 NonfairSync"></a>2.2 NonfairSync</h3><p>非公平锁的实现类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">static final class NonfairSync extends Sync &#123;</span><br><span class="line">      private static final long serialVersionUID = 7316153563782823691L;</span><br><span class="line"></span><br><span class="line">      /**</span><br><span class="line">       * Performs lock.  Try immediate barge, backing up to normal</span><br><span class="line">       * acquire on failure.</span><br><span class="line">       */</span><br><span class="line">       //若CAS成功，表示初次获得锁，设置独占线程为当前线程；若失败，则调用父类AQS的acquire()</span><br><span class="line">       //非公平的实现既是这里，后来的线程可能通过CAS抢先获得锁，而原来在队列里等待的头结点的后继节点，被唤醒后可能发现仍然获取不到锁</span><br><span class="line">      final void lock() &#123;</span><br><span class="line">          if (compareAndSetState(0, 1))</span><br><span class="line">              setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">          else</span><br><span class="line">              acquire(1);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line">          return nonfairTryAcquire(acquires);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-3-FairSync"><a href="#2-3-FairSync" class="headerlink" title="2.3 FairSync"></a>2.3 FairSync</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">static final class FairSync extends Sync &#123;</span><br><span class="line">    private static final long serialVersionUID = -3000897897090466540L;</span><br><span class="line"></span><br><span class="line">    final void lock() &#123;</span><br><span class="line">        acquire(1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Fair version of tryAcquire.  Don&apos;t grant access unless</span><br><span class="line">     * recursive call or no waiters or is first.</span><br><span class="line">     */</span><br><span class="line">    protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line">        final Thread current = Thread.currentThread();</span><br><span class="line">        int c = getState();</span><br><span class="line">        if (c == 0) &#123;</span><br><span class="line">            //判断队列中是否有等待节点，有则不进行CAS操作</span><br><span class="line">            if (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">                compareAndSetState(0, acquires)) &#123;</span><br><span class="line">                setExclusiveOwnerThread(current);</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;//若当前线程已获得锁，则无需CAS，直接加acquire量，表示重入</span><br><span class="line">        else if (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">            int nextc = c + acquires;</span><br><span class="line">            if (nextc &lt; 0)</span><br><span class="line">                throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">            setState(nextc);</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-4-公平锁与非公平锁对比"><a href="#2-4-公平锁与非公平锁对比" class="headerlink" title="2.4 公平锁与非公平锁对比"></a>2.4 公平锁与非公平锁对比</h2><p>公平锁在tryAquire()时，若判断队列有等待节点，则不会进行CAS操作去尝试竞争锁，而非公平锁的实现nonfairTryAcquire当发现state==0时，无论队列中是否</p>
 
       
 
@@ -219,11 +189,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动内存管理机制</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ReentrantLock</a>
         		</li>
       		
 		</ul>
@@ -235,7 +209,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/JVM//" class="article-tag-list-link color4">JVM</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -290,7 +264,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/03/16/JavaConcurrency/ReentrantLock源码 -- Sync和Lock/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -304,18 +278,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/02/24/Netty/netty01/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/03/17/JavaConcurrency/AQS源码阅读（二） -- Condition/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Netty源码阅读笔记（一）
+          AQS源码阅读（二） -- Condition
         
       </div>
     </a>
   
   
-    <a href="/2018/04/12/mysql/mysql05_02/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">创建高性能的索引（二）</div>
+    <a href="/2019/03/16/JavaConcurrency/AQS源码阅读（一） -- 独占模式/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">AQS源码阅读（一） -- 独占模式</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -342,7 +316,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    目录，不存在的…
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-0-Lock"><span class="toc-number">1.</span> <span class="toc-text">1.0 Lock</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-lock"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 lock()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-lockInterruptibly"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 lockInterruptibly()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-tryLock"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 tryLock()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-tryLock-long-timeout-TimeUnit-unit"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 tryLock(long timeout, TimeUnit unit)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-unlock"><span class="toc-number">1.5.</span> <span class="toc-text">1.5 unlock()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-0-Sync"><span class="toc-number">2.</span> <span class="toc-text">2.0 Sync</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-主要方法"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 主要方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-nonfairTryAcquire-int-acquires"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 nonfairTryAcquire(int acquires)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-tryRelease-int-releases"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 tryRelease(int releases)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-NonfairSync"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 NonfairSync</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-FairSync"><span class="toc-number">3.</span> <span class="toc-text">2.3 FairSync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-公平锁与非公平锁对比"><span class="toc-number">4.</span> <span class="toc-text">2.4 公平锁与非公平锁对比</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -359,8 +333,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "http://yoursite.com/2018/04/17/JVM/HotSpot_virtual_machine_object/", 
-    sourceId: "JVM/HotSpot_virtual_machine_object",
+    url: "http://yoursite.com/2019/03/16/JavaConcurrency/ReentrantLock源码 -- Sync和Lock/", 
+    sourceId: "JavaConcurrency/ReentrantLock源码 -- Sync和Lock",
     productKey: "true",
     target: "cloud-tie-wrapper"
   };

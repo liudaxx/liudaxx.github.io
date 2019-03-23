@@ -9,7 +9,7 @@
   <title>AQS源码阅读（一） -- 独占模式 | Your Thoughts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="本章主要介绍独享模式相关源码 1.0 Node节点共有两种模式及五种状态。两种模式：  独享模式 共享模式  五种状态：  0 当头节点线程release后，会被置为此状态 SIGNAL -1：当后继节点要被阻塞前，会把前驱节点设置该状态。当release时，发现节点处于该状态时，会唤醒后续节点 CONDITION -2：意味着该线程正在一个条件上等待，当来到等待队列时，（该状态与0等价处理？）">
-<meta name="keywords" content="源码,AQS">
+<meta name="keywords" content="AQS,源码">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AQS源码阅读（一） -- 独占模式">
 <meta property="og:url" content="http://yoursite.com/2019/03/16/JavaConcurrency/AQS源码阅读（一） -- 独占模式/index.html">
@@ -221,11 +221,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		
 		</ul>
@@ -306,18 +306,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/03/17/JavaConcurrency/AQS源码阅读（二） -- Condition/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/03/16/JavaConcurrency/ReentrantLock源码 -- Sync和Lock/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          AQS源码阅读（二） -- Condition
+          ReentrantLock源码 -- Sync和Lock
         
       </div>
     </a>
   
   
-    <a href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">ReentrantLock源码（一） -- Sync和Lock</div>
+    <a href="/2019/03/13/JVM/synchronized/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">深入理解偏向锁</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -487,11 +487,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+                <a href="javascript:void(0)" class="js-tag color4">Դ��</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -499,11 +495,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ReentrantLock</a>
+                <a href="javascript:void(0)" class="js-tag color2">����ģʽ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ReentrantLock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -511,7 +519,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
               </li>
             
             <div class="clearfix"></div>

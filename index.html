@@ -138,6 +138,99 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-JavaConcurrency/AQS源码阅读（三） -- 共享模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/">AQSԴ���Ķ������� -- ����ģʽ</a>
+    </h1>
+  
+
+        
+        <a href="/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/" class="archive-article-date">
+  	<time datetime="2019-03-23T21:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-0-Acquire"><a href="#1-0-Acquire" class="headerlink" title="1.0 Acquire"></a>1.0 Acquire</h2><h3 id="1-1-acquireShared-int-arg"><a href="#1-1-acquireShared-int-arg" class="headerlink" title="1.1 acquireShared(int arg)"></a>1.1 acquireShared(int arg)</h3><p>���ռģʽʵ�����ƣ������û�ȡstate�����෽����ΪtryAcquireShared()<br>����һ�����ǣ���ռģʽ�£����ɹ���ȡstate֮�󣬽��Ὣ��ǰ�ڵ�����Ϊhead����ִ�����״̬���Ĳ�����<br>���ڹ���ģʽ�£�����ִ�������ռģʽ�¶�head����ز����⣬����doReleaseShareȥ���Ի��Ѹýڵ�ĺ�̽ڵ�</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Դ��</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">����ģʽ</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-JavaConcurrency/AQS源码阅读（二） -- Condition" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -165,14 +258,7 @@
 <li>其他线程调用signal()方法前也必须获取锁，当执行signal()方法时将等待队列的节点移入到同步队列，当线程退出临界区释放锁的时候，唤醒同步队列的首个节点</li>
 </ol>
 <h2 id="1-0-ConditionObject"><a href="#1-0-ConditionObject" class="headerlink" title="1.0 ConditionObject"></a>1.0 ConditionObject</h2><p>条件队列结构，类似线程等待队列结构，一头一尾<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/** First node of condition queue. */</span><br><span class="line">private transient Node firstWaiter;</span><br><span class="line">/** Last node of condition queue. */</span><br><span class="line">private transient Node lastWaiter;</span><br></pre></td></tr></table></figure></p>
-<h3 id="1-1-await"><a href="#1-1-await" class="headerlink" title="1.1 await()"></a>1.1 await()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">public final void await() throws InterruptedException &#123;</span><br><span class="line">    if (Thread.interrupted())</span><br><span class="line">        throw new InterruptedException();</span><br><span class="line">    //该方法会将本线程封装成条件节点并加入条件队列</span><br><span class="line">    Node node = addConditionWaiter();</span><br><span class="line">    //释放以获得的全部state量，释放成功返回该量</span><br><span class="line">    int savedState = fullyRelease(node);</span><br><span class="line">    int interruptMode = 0;</span><br><span class="line">    //关键代码，若节点仍在条件队列中，则返回false，线程则会被挂起阻塞；若true则表示被移到了同步队列</span><br><span class="line">    //当阻塞的线程被唤醒时，若已被移到同步队列，则会退出循环</span><br><span class="line">    while (!isOnSyncQueue(node)) &#123;</span><br><span class="line">        LockSupport.park(this);</span><br><span class="line">        if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    //进入到获取锁的流程中，此时已来到同步队列的逻辑，在该方法中，若前继节点是头节点，则会尝试获得锁；若非头结点，则会将前继节点设置未SIGNAL状态，并挂起</span><br><span class="line">    if (acquireQueued(node, savedState) &amp;&amp; interruptMode != THROW_IE)</span><br><span class="line">        interruptMode = REINTERRUPT;</span><br><span class="line">    if (node.nextWaiter != null) // clean up if cancelled</span><br><span class="line">        unlinkCancelledWaiters();</span><br><span class="line">    if (interruptMode != 0)</span><br><span class="line">        reportInterruptAfterWait(interruptMode);</span><br><span class="line">    //当获得节点从条件队列转移到同步队列，并在同步队列中获得锁，就会走到最后 并返回到用户代码</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">final boolean isOnSyncQueue(Node node) &#123;</span><br><span class="line">    //当node被移至同步队列时，会将status置为0，当仍有可能在signal()中先执行了CAS操作，但并未转移到同步队列</span><br><span class="line">    //当节点移入到同步队列后，node的前继节点必定不为null </span><br><span class="line">    //因为当节点入队时，若队列没有头节点，则会设置一个初始化的节点作为头结点</span><br><span class="line">    if (node.waitStatus == Node.CONDITION || node.prev == null)</span><br><span class="line">        return false;</span><br><span class="line">    //如果有后继节点则肯定存在同步队列中</span><br><span class="line">    if (node.next != null) // If has successor, it must be on queue</span><br><span class="line">        return true;</span><br><span class="line">    /*</span><br><span class="line">     * node.prev can be non-null, but not yet on queue because</span><br><span class="line">     * the CAS to place it on queue can fail. So we have to</span><br><span class="line">     * traverse from tail to make sure it actually made it.  It</span><br><span class="line">     * will always be near the tail in calls to this method, and</span><br><span class="line">     * unless the CAS failed (which is unlikely), it will be</span><br><span class="line">     * there, so we hardly ever traverse much.</span><br><span class="line">     */</span><br><span class="line">     //可能该Node刚刚最后一个进入release队列，所以是tail，其next必然是null，所以需要从队尾向前查找</span><br><span class="line">    return findNodeFromTail(node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>为何node.prev不为null仍无法判断已经在同步队列了呢？在注释中提到了，因为在enq()代码中，可能node的前驱节点已经指向同步队列中的节点，但该还需一个CAS操作将node插入队尾,这样才能表示插入成功。</p>
-<h4 id="1-1-1-addConditionWaiter"><a href="#1-1-1-addConditionWaiter" class="headerlink" title="1.1.1 addConditionWaiter();"></a>1.1.1 addConditionWaiter();</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"> private Node addConditionWaiter() &#123;</span><br><span class="line">     Node t = lastWaiter;</span><br><span class="line">     // If lastWaiter is cancelled, clean out.</span><br><span class="line">     if (t != null &amp;&amp; t.waitStatus != Node.CONDITION) &#123;</span><br><span class="line">         //去掉已经取消的waiter节点</span><br><span class="line">         unlinkCancelledWaiters();</span><br><span class="line">         t = lastWaiter;</span><br><span class="line">     &#125;</span><br><span class="line">     //构造Condition节点</span><br><span class="line">     Node node = new Node(Thread.currentThread(), Node.CONDITION);</span><br><span class="line">     if (t == null)</span><br><span class="line">         firstWaiter = node;</span><br><span class="line">     else //在尾部插入</span><br><span class="line">         t.nextWaiter = node;</span><br><span class="line">     lastWaiter = node;</span><br><span class="line">     return node;</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line">private void unlinkCancelledWaiters() &#123;</span><br><span class="line">     Node t = firstWaiter;</span><br><span class="line">     Node trail = null;</span><br><span class="line">     while (t != null) &#123;</span><br><span class="line">         Node next = t.nextWaiter;</span><br><span class="line">         if (t.waitStatus != Node.CONDITION) &#123;</span><br><span class="line">             t.nextWaiter = null;</span><br><span class="line">             if (trail == null)</span><br><span class="line">                 firstWaiter = next;</span><br><span class="line">             else</span><br><span class="line">                 trail.nextWaiter = next;</span><br><span class="line">             if (next == null)</span><br><span class="line">                 lastWaiter = trail;</span><br><span class="line">         &#125;</span><br><span class="line">         else</span><br><span class="line">             trail = t;</span><br><span class="line">         t = next;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="1-1-2-fullyRelease-Node-node"><a href="#1-1-2-fullyRelease-Node-node" class="headerlink" title="1.1.2 fullyRelease(Node node)"></a>1.1.2 fullyRelease(Node node)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">final int fullyRelease(Node node) &#123;</span><br><span class="line">    boolean failed = true;</span><br><span class="line">    try &#123;</span><br><span class="line">        //获取state量</span><br><span class="line">        int savedState = getState();</span><br><span class="line">        //释放release</span><br><span class="line">        if (release(savedState)) &#123;</span><br><span class="line">            failed = false;</span><br><span class="line">            return savedState;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            //释放锁失败，说明非法操作抛出异常</span><br><span class="line">            throw new IllegalMonitorStateException();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        if (failed)</span><br><span class="line">            node.waitStatus = Node.CANCELLED;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="1-2-signal"><a href="#1-2-signal" class="headerlink" title="1.2 signal()"></a>1.2 signal()</h3><p>signal函数会将条件队列中的第一个节点移到等待队列中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public final void signal() &#123;</span><br><span class="line">    //判断当前线程是否已经获得独占锁</span><br><span class="line">    if (!isHeldExclusively())</span><br><span class="line">        throw new IllegalMonitorStateException();</span><br><span class="line">    Node first = firstWaiter;</span><br><span class="line">    if (first != null)</span><br><span class="line">        doSignal(first);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void doSignal(Node first) &#123;</span><br><span class="line">    do &#123;</span><br><span class="line">        //将头结点设置为当前节点的下一个节点</span><br><span class="line">        //如果没有下一个等待元素，则将尾节点也置空</span><br><span class="line">        if ( (firstWaiter = first.nextWaiter) == null)</span><br><span class="line">            lastWaiter = null;</span><br><span class="line">        first.nextWaiter = null;</span><br><span class="line">        //若移交失败，仅但移交节点被取消时会失败，此时将当前的第一个节点继续移交到同步队列中</span><br><span class="line">    &#125; while (!transferForSignal(first) &amp;&amp;</span><br><span class="line">             (first = firstWaiter) != null);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h4 id="1-2-1-transferForSignal-Node-node"><a href="#1-2-1-transferForSignal-Node-node" class="headerlink" title="1.2.1 transferForSignal(Node node)"></a>1.2.1 transferForSignal(Node node)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">final boolean transferForSignal(Node node) &#123;</span><br><span class="line">    /*</span><br><span class="line">     * If cannot change waitStatus, the node has been cancelled.</span><br><span class="line">     */</span><br><span class="line">    //首先CAS将节点的条件设置为0</span><br><span class="line">    if (!compareAndSetWaitStatus(node, Node.CONDITION, 0))</span><br><span class="line">        return false;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * Splice onto queue and try to set waitStatus of predecessor to</span><br><span class="line">     * indicate that thread is (probably) waiting. If cancelled or</span><br><span class="line">     * attempt to set waitStatus fails, wake up to resync (in which</span><br><span class="line">     * case the waitStatus can be transiently and harmlessly wrong).</span><br><span class="line">     */</span><br><span class="line">    //该方法将节点加入到同步队列中，并拿到返回的前继节点</span><br><span class="line">    Node p = enq(node);</span><br><span class="line">    int ws = p.waitStatus;</span><br><span class="line">    //若前继节点的ws大于0则表示被取消，或是将前驱节点的状态CAS为SIGNAL失败，都会重新唤醒node节点的线程，唤醒后它会重新找到一个非取消的节点并将前继置为SIGNAL，极少会走这步逻辑</span><br><span class="line">    if (ws &gt; 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL))</span><br><span class="line">        LockSupport.unpark(node.thread);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="1-3-signalAll"><a href="#1-3-signalAll" class="headerlink" title="1.3  signalAll()"></a>1.3  signalAll()</h2><p>与signal类似，但不仅将第一个等待元素移交到同步队列，而是全部节点都移过去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public final void signalAll() &#123;</span><br><span class="line">    if (!isHeldExclusively())</span><br><span class="line">        throw new IllegalMonitorStateException();</span><br><span class="line">    Node first = firstWaiter;</span><br><span class="line">    if (first != null)</span><br><span class="line">        doSignalAll(first);</span><br><span class="line">&#125;</span><br><span class="line">private void doSignalAll(Node first) &#123;</span><br><span class="line">    lastWaiter = firstWaiter = null;</span><br><span class="line">    do &#123;</span><br><span class="line">        Node next = first.nextWaiter;</span><br><span class="line">        first.nextWaiter = null;</span><br><span class="line">        transferForSignal(first);</span><br><span class="line">        first = next;</span><br><span class="line">    &#125; while (first != null);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
+        
       
 
       
@@ -185,11 +271,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -215,6 +301,100 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/03/17/JavaConcurrency/AQS源码阅读（二） -- Condition/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JavaConcurrency/ReentrantLock源码 -- Sync和Lock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/16/JavaConcurrency/ReentrantLock源码 -- Sync和Lock/">ReentrantLock源码 -- Sync和Lock</a>
+    </h1>
+  
+
+        
+        <a href="/2019/03/16/JavaConcurrency/ReentrantLock源码 -- Sync和Lock/" class="archive-article-date">
+  	<time datetime="2019-03-16T13:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-0-Lock"><a href="#1-0-Lock" class="headerlink" title="1.0 Lock"></a>1.0 Lock</h2><p>ReentrantLock类的Lock锁的使用都基于Sync实现，默认情况下使用非公平锁实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public ReentrantLock() &#123;</span><br><span class="line">    sync = new NonfairSync();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Creates an instance of &#123;@code ReentrantLock&#125; with the</span><br><span class="line"> * given fairness policy.</span><br><span class="line"> *</span><br><span class="line"> * @param fair &#123;@code true&#125; if this lock should use a fair ordering policy</span><br><span class="line"> */</span><br><span class="line">public ReentrantLock(boolean fair) &#123;</span><br><span class="line">    sync = fair ? new FairSync() : new NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ReentrantLock</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/03/16/JavaConcurrency/ReentrantLock源码 -- Sync和Lock/">展开全文 >></a>
         </p>
       
 
@@ -290,11 +470,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		
 		</ul>
@@ -316,100 +496,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/03/16/JavaConcurrency/AQS源码阅读（一） -- 独占模式/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/">ReentrantLock源码（一） -- Sync和Lock</a>
-    </h1>
-  
-
-        
-        <a href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/" class="archive-article-date">
-  	<time datetime="2019-03-16T13:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="1-0-Lock"><a href="#1-0-Lock" class="headerlink" title="1.0 Lock"></a>1.0 Lock</h2><p>ReentrantLock类的Lock锁的使用都基于Sync实现，默认情况下使用非公平锁实现</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public ReentrantLock() &#123;</span><br><span class="line">    sync = new NonfairSync();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Creates an instance of &#123;@code ReentrantLock&#125; with the</span><br><span class="line"> * given fairness policy.</span><br><span class="line"> *</span><br><span class="line"> * @param fair &#123;@code true&#125; if this lock should use a fair ordering policy</span><br><span class="line"> */</span><br><span class="line">public ReentrantLock(boolean fair) &#123;</span><br><span class="line">    sync = fair ? new FairSync() : new NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ReentrantLock</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/16/JavaConcurrency/ReentrantLock源码（一） -- Sync和Lock/">展开全文 >></a>
         </p>
       
 
@@ -569,11 +655,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
@@ -797,11 +883,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
@@ -893,11 +979,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
@@ -1147,125 +1233,6 @@
 
 
   
-    <article id="post-mysql/mysql05_01" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/03/mysql/mysql05_01/">创建高性能的索引（一）</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/03/mysql/mysql05_01/" class="archive-article-date">
-  	<time datetime="2018-04-02T16:35:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/2018/04/03/mysql/mysql05_01/20180417011343.png" alt></p>
-<h2 id="5-0-索引的数据结构"><a href="#5-0-索引的数据结构" class="headerlink" title="5.0 索引的数据结构"></a>5.0 索引的数据结构</h2><h3 id="平衡多路查找树（B-Tree）："><a href="#平衡多路查找树（B-Tree）：" class="headerlink" title="平衡多路查找树（B-Tree）："></a>平衡多路查找树（B-Tree）：</h3><blockquote>
-<p>  一棵m阶的B-Tree有如下特性： </p>
-</blockquote>
-<blockquote>
-<p>  每个节点最多有m个孩子。 </p>
-</blockquote>
-<blockquote>
-<p>  除了根节点和叶子节点外，其它每个节点至少有Ceil(m/2)个孩子。 </p>
-</blockquote>
-<blockquote>
-<p>  若根节点不是叶子节点，则至少有2个孩子 </p>
-</blockquote>
-<blockquote>
-<p>  所有叶子节点都在同一层，且不包含其它关键字信息 </p>
-</blockquote>
-<blockquote>
-<p>  每个非终端节点包含n个关键字信息（P0,P1,…Pn, k1,…kn） </p>
-</blockquote>
-<blockquote>
-<p>  关键字的个数n满足：ceil(m/2)-1 \&lt;= n \&lt;= m-1 </p>
-</blockquote>
-<blockquote>
-<p>  ki(i=1,…n)为关键字，且关键字升序排序。 </p>
-</blockquote>
-<blockquote>
-<p>  Pi(i=1,…n)为指向子树根节点的指针。P(i-1)指向的子树的所有节点关键字均小于ki，但都大于k(i-1)</p>
-</blockquote>
-<blockquote>
-<p>  B-Tree中的每个节点根据实际情况可以包含大量的关键字信息和分支，如下图所示为一个3阶的B-Tree： </p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">索引</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/03/mysql/mysql05_01/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1383,11 +1350,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+                <a href="javascript:void(0)" class="js-tag color4">Դ��</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1395,11 +1358,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ReentrantLock</a>
+                <a href="javascript:void(0)" class="js-tag color2">����ģʽ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ReentrantLock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1407,7 +1382,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
               </li>
             
             <div class="clearfix"></div>

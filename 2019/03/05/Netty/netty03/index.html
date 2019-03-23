@@ -9,7 +9,7 @@
   <title>Netty源码阅读笔记（三） --Netty连接接入逻辑 | Your Thoughts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Netty连接接入逻辑服务端启动会绑定boss线程的NioEventLoop，该boss线程会监听并accept事件，主要流程如下图所示1234graph LR检测新连接--&amp;gt;创建NioSocketChannel创建NioSocketChannel--&amp;gt;分配线程及注册selector分配线程及注册selector--&amp;gt;向selector注册读事件 1234567891011//从">
-<meta name="keywords" content="Netty,源码">
+<meta name="keywords" content="源码,Netty">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Netty源码阅读笔记（三） --Netty连接接入逻辑">
 <meta property="og:url" content="http://yoursite.com/2019/03/05/Netty/netty03/index.html">
@@ -205,11 +205,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
@@ -471,11 +471,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+                <a href="javascript:void(0)" class="js-tag color4">Դ��</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -483,11 +479,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ReentrantLock</a>
+                <a href="javascript:void(0)" class="js-tag color2">����ģʽ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ReentrantLock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -495,7 +503,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Condition</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据类型</a>
               </li>
             
             <div class="clearfix"></div>
