@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: ����ģʽ | Your Thoughts</title>
+  <title>CountDownLatch与CyclicBarrier 源码解析 | Your Thoughts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Your Thoughts">
-<meta property="og:url" content="http://yoursite.com/tags/����gʽ/index.html">
+  <meta name="description" content="这两者的功能十分相似，一个十分浅显的区别是：前者是一次性的，而后者reset后是可多次使用的。更深层次的区别在javadoc中有所区别。  CountDownLatch: A synchronization aid that allows one or more threads to wait until a set of operations being performed in other t">
+<meta name="keywords" content="AQS,源码,CountDownLatch,CyclicBarrier">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CountDownLatch与CyclicBarrier 源码解析">
+<meta property="og:url" content="http://yoursite.com/2019/03/24/JavaConcurrency/CountDownLatch与CyclicBarrier 源码解析/index.html">
 <meta property="og:site_name" content="Your Thoughts">
+<meta property="og:description" content="这两者的功能十分相似，一个十分浅显的区别是：前者是一次性的，而后者reset后是可多次使用的。更深层次的区别在javadoc中有所区别。  CountDownLatch: A synchronization aid that allows one or more threads to wait until a set of operations being performed in other t">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-24T11:25:54.363Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Your Thoughts">
+<meta name="twitter:title" content="CountDownLatch与CyclicBarrier 源码解析">
+<meta name="twitter:description" content="这两者的功能十分相似，一个十分浅显的区别是：前者是一次性的，而后者reset后是可多次使用的。更深层次的区别在javadoc中有所区别。  CountDownLatch: A synchronization aid that allows one or more threads to wait until a set of operations being performed in other t">
   
     <link rel="alternative" href="/atom.xml" title="Your Thoughts" type="application/atom+xml">
   
@@ -136,56 +141,73 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-JavaConcurrency/CountDownLatch与CyclicBarrier 源码解析" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/" class="archive-article-date">
-  	<time datetime="2019-03-23T21:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-24</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/">AQSԴ���Ķ������� -- ����ģʽ</a>
+    <h1 class="article-title" itemprop="name">
+      CountDownLatch与CyclicBarrier 源码解析
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/03/24/JavaConcurrency/CountDownLatch与CyclicBarrier 源码解析/" class="archive-article-date">
+  	<time datetime="2019-03-24T11:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这两者的功能十分相似，一个十分浅显的区别是：前者是一次性的，而后者reset后是可多次使用的。更深层次的区别在javadoc中有所区别。</p>
+<blockquote>
+<p>CountDownLatch: A synchronization aid that allows one or more threads to wait until a set of operations being performed in other threads completes.<br> CyclicBarrier : A synchronization aid that allows a set of threads to all wait for each other to reach a common barrier point.</p>
+</blockquote>
+<p>从上述描述可得知，CountDownLatch是在<strong>一组线程</strong>（一个或多个)在等待一系列的在<strong>其他线程</strong>的操作完成场景下使用使用。<br>而CyclicBarrier则是在<strong>一组线程</strong>在<strong>相互等待</strong>一起到达一个拦截点后执行场景下使用。<br>下面从源码层面来分析二者区别</p>
+<h2 id="CountDownLatch"><a href="#CountDownLatch" class="headerlink" title="CountDownLatch"></a>CountDownLatch</h2><p>CountDownLatch的使用者在构造对象时传入一个数量N。其他线程调用countDownLatch.await()等到其他线程调用countDownLatch.countDown()被调用N次后返回。</p>
+<a id="more"></a>
+<h3 id="CountDownLatch-int-count-构造函数"><a href="#CountDownLatch-int-count-构造函数" class="headerlink" title="CountDownLatch(int count)构造函数"></a>CountDownLatch(int count)构造函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">public CountDownLatch(int count) &#123;</span><br><span class="line">    //传入count需大于等于0</span><br><span class="line">    if (count &lt; 0) throw new IllegalArgumentException(&quot;count &lt; 0&quot;);</span><br><span class="line">    调用AQS的实现子类</span><br><span class="line">    this.sync = new Sync(count);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">private static final class Sync extends AbstractQueuedSynchronizer &#123;</span><br><span class="line">    private static final long serialVersionUID = 4982264981922014374L;</span><br><span class="line"></span><br><span class="line">    Sync(int count) &#123;</span><br><span class="line">        //将AQS的state设置为count,关键代码</span><br><span class="line">        setState(count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    int getCount() &#123;</span><br><span class="line">        return getState();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    //重要代码 下文分析</span><br><span class="line">    protected int tryAcquireShared(int acquires) &#123;</span><br><span class="line">        return (getState() == 0) ? 1 : -1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    //重要代码 下文分析</span><br><span class="line">    protected boolean tryReleaseShared(int releases) &#123;</span><br><span class="line">        // Decrement count; signal when transition to zero</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            int c = getState();</span><br><span class="line">            if (c == 0)</span><br><span class="line">                return false;</span><br><span class="line">            int nextc = c-1;</span><br><span class="line">            if (compareAndSetState(c, nextc))</span><br><span class="line">                return nextc == 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="await"><a href="#await" class="headerlink" title="await()"></a>await()</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">//CountdownLatch等待的入口方法</span><br><span class="line">public void await() throws InterruptedException &#123;</span><br><span class="line">    sync.acquireSharedInterruptibly(1);</span><br><span class="line">&#125;</span><br><span class="line">//AQS.acquireSharedInterruptibly() 具体分析见博客的AQS源码分析文章</span><br><span class="line">public final void acquireSharedInterruptibly(int arg)</span><br><span class="line">        throws InterruptedException &#123;</span><br><span class="line">    if (Thread.interrupted())</span><br><span class="line">        throw new InterruptedException();</span><br><span class="line">    //关键代码，在此处会调用Sync中的方法，当返回1，则返回；否则调用AQS.doAcquireSharedInterruptibly的挂起线程</span><br><span class="line">    if (tryAcquireShared(arg) &lt; 0)</span><br><span class="line">        doAcquireSharedInterruptibly(arg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    private static final class Sync extends AbstractQueuedSynchronizer &#123;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    /**</span><br><span class="line">     * await()调用父类的acquireShared()中调用的方法，仅当state==0才会返回1,</span><br><span class="line">     * 调用await()线程才会返回。而其余情况返回-1，acquireShared()</span><br><span class="line">     * 中会将该线程封装成节点并挂起，调用await()线程会被挂起。</span><br><span class="line">     **/</span><br><span class="line">    protected int tryAcquireShared(int acquires) &#123;</span><br><span class="line">        return (getState() == 0) ? 1 : -1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<h2 id="countDown"><a href="#countDown" class="headerlink" title="countDown()"></a>countDown()</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">//CountdownLatch减掉state的入口</span><br><span class="line">public void countDown() &#123;</span><br><span class="line">    sync.releaseShared(1);</span><br><span class="line">&#125;</span><br><span class="line">//AQS.releaseShared() 具体分析见博客的AQS源码分析文章</span><br><span class="line">public final boolean releaseShared(int arg) &#123;</span><br><span class="line">    //关键代码，在此处会调用Sync中的方法，当state==0会返回true，则调用AQS.tryReleaseShared()释放同步队列上的元素。否则返回false;</span><br><span class="line">    if (tryReleaseShared(arg)) &#123;</span><br><span class="line">        doReleaseShared();</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">private static final class Sync extends AbstractQueuedSynchronizer &#123;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    /**</span><br><span class="line">     * countDown()调用父类的releaseShared()中调用的方法，countDown()</span><br><span class="line">     * 的每次调用会在这里进行CAS操作将state--;若CAS操作结束后，state==0,则返回true,</span><br><span class="line">     * 父类的releaseShared()-&gt;doReleaseShared()去将线程唤醒。</span><br><span class="line">     */</span><br><span class="line">    protected boolean tryReleaseShared(int releases) &#123;</span><br><span class="line">        // Decrement count; signal when transition to zero</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            int c = getState();</span><br><span class="line">            if (c == 0)</span><br><span class="line">                return false;</span><br><span class="line">            int nextc = c-1;</span><br><span class="line">            if (compareAndSetState(c, nextc))</span><br><span class="line">                return nextc == 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="CyclicBarrier"><a href="#CyclicBarrier" class="headerlink" title="CyclicBarrier"></a>CyclicBarrier</h2><h3 id="域"><a href="#域" class="headerlink" title="域"></a>域</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> /** The lock for guarding barrier entry */</span><br><span class="line">private final ReentrantLock lock = new ReentrantLock();</span><br><span class="line">/** Condition to wait on until tripped */</span><br><span class="line">private final Condition trip = lock.newCondition();</span><br><span class="line">/** The number of parties */</span><br><span class="line">/** 该值为一个栅栏的使用线程数，</span><br><span class="line"> * 改值再构造函数赋值给count 每次一个线程到达await中，</span><br><span class="line"> * count-- 直到最后一个线程到达栅栏 count == 0，则会唤醒所有线程</span><br><span class="line"> */</span><br><span class="line">private final int parties;</span><br><span class="line">/* The command to run when tripped */</span><br><span class="line">/* 最后一个线程到达栅栏返回前会执行的函数*/</span><br><span class="line">private final Runnable barrierCommand;</span><br><span class="line">/** The current generation */</span><br><span class="line">/** 用于CyclicBarrier的复用*/</span><br><span class="line">private Generation generation = new Generation();</span><br></pre></td></tr></table></figure>
+<h3 id="await-1"><a href="#await-1" class="headerlink" title="await()"></a>await()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">public int await() throws InterruptedException, BrokenBarrierException &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        return dowait(false, 0L);</span><br><span class="line">    &#125; catch (TimeoutException toe) &#123;</span><br><span class="line">        throw new Error(toe); // cannot happen</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private int dowait(boolean timed, long nanos)</span><br><span class="line">    throws InterruptedException, BrokenBarrierException,</span><br><span class="line">           TimeoutException &#123;</span><br><span class="line">    final ReentrantLock lock = this.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    </span><br><span class="line">    try &#123;</span><br><span class="line">        final Generation g = generation;</span><br><span class="line">        //默认为false，若被置true 抛出异常</span><br><span class="line">        if (g.broken)</span><br><span class="line">            throw new BrokenBarrierException();</span><br><span class="line">        //当线程被设置中断，调用打破barrier的函数，并抛出中断异常</span><br><span class="line">        if (Thread.interrupted()) &#123;</span><br><span class="line">            breakBarrier();</span><br><span class="line">            throw new InterruptedException();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //最后一个到达栅栏的线程，由于本方法是线程独占的，因此此处操作是安全的</span><br><span class="line">        int index = --count;</span><br><span class="line">        if (index == 0) &#123;  // tripped</span><br><span class="line">            boolean ranAction = false;</span><br><span class="line">            try &#123;</span><br><span class="line">                //促发到达命令</span><br><span class="line">                final Runnable command = barrierCommand;</span><br><span class="line">                if (command != null)</span><br><span class="line">                    command.run();</span><br><span class="line">                ranAction = true;</span><br><span class="line">                //唤醒所有等待线程，并重新new一个Generation</span><br><span class="line">                nextGeneration();</span><br><span class="line">                return 0;</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                if (!ranAction)</span><br><span class="line">                    //异常，打破栅栏</span><br><span class="line">                    breakBarrier();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        // loop until tripped, broken, interrupted, or timed out</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                //若没有设置超时时间，调用await在条件队列上等待，并且release所有的state，被添加到等待队列中并被唤醒后，再尝试调用acquireQueued(node, savedState)去重新获得之前暂时释放的state，重新获得成功时，就会来到这里</span><br><span class="line">                if (!timed)</span><br><span class="line">                    trip.await();</span><br><span class="line">                else if (nanos &gt; 0L)//阻塞一定时间</span><br><span class="line">                    nanos = trip.awaitNanos(nanos);</span><br><span class="line">            &#125; catch (InterruptedException ie) &#123;</span><br><span class="line">                if (g == generation &amp;&amp; ! g.broken) &#123;</span><br><span class="line">                    breakBarrier();</span><br><span class="line">                    throw ie;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    // We&apos;re about to finish waiting even if we had not</span><br><span class="line">                    // been interrupted, so this interrupt is deemed to</span><br><span class="line">                    // &quot;belong&quot; to subsequent execution.</span><br><span class="line">                    Thread.currentThread().interrupt();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            //唤醒是发现本代已经被broken，抛出异常</span><br><span class="line">            if (g.broken)</span><br><span class="line">                throw new BrokenBarrierException();</span><br><span class="line">            //被唤醒时已经不是阻塞时那一代，返回自己的index</span><br><span class="line">            //在这里返回时正常的，因为在最后一个线程到达栅栏时会触发换代函数，说明已经成功执行完一次</span><br><span class="line">            if (g != generation)</span><br><span class="line">                return index;</span><br><span class="line">            //被唤醒后，代数和自己被阻塞时一致，说明本次栅栏还未完成，若超时，抛出超时异常，打破迭代</span><br><span class="line">            if (timed &amp;&amp; nanos &lt;= 0L) &#123;</span><br><span class="line">                breakBarrier();</span><br><span class="line">                throw new TimeoutException();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void nextGeneration() &#123;</span><br><span class="line">    // signal completion of last generation</span><br><span class="line">    // 一次栅栏操作完成，唤醒所有其它线程</span><br><span class="line">    trip.signalAll();</span><br><span class="line">    // set up next generation</span><br><span class="line">    count = parties;</span><br><span class="line">    generation = new Generation();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void breakBarrier() &#123;</span><br><span class="line">    //用于当线程被唤醒时，检查到已经被broken，则抛出异常</span><br><span class="line">    generation.broken = true;</span><br><span class="line">    count = parties;</span><br><span class="line">    //唤醒所有阻塞线程</span><br><span class="line">    trip.signalAll();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="reset"><a href="#reset" class="headerlink" title="reset()"></a>reset()</h3><p>该方法会打破当前的栅栏，该操作会导致已经再等待的线程抛出BrokenBarrierException。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public void reset() &#123;</span><br><span class="line">    final ReentrantLock lock = this.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    try &#123;</span><br><span class="line">        breakBarrier();   // break the current generation</span><br><span class="line">        nextGeneration(); // start a new generation</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="对比总结"><a href="#对比总结" class="headerlink" title="对比总结"></a>对比总结</h2><p>CountDownLatch的线程再获取锁时调用的时tryAcquireShared()方法，且该方法只要state==0，则会获得锁成功。<br>CyclicBarrier的实现时依靠ReentrantLock和Condition，在操作Condition前时需要先通过ReentrantLock.lock()（也是调用tryAcquire()）获取独占锁的，并且在条件队列的节点被移到同步队列被唤醒时，仍然是要调用tryAcquire()获取独占锁，才能执行线程操作的。</p>
+<p>既是说，CountDownLatch在await()返回后，线程是可以并行执行的。而CyclicBarrier的await()是串行返回的，并且返回顺序除了最后一个到达栅栏的线程最先返回，其它线程是按线程到达栅栏先后顺序操作的</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Դ��</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">����ģʽ</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CountDownLatch</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">CyclicBarrier</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -198,17 +220,128 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/03/24/JavaConcurrency/CountDownLatch与CyclicBarrier 源码解析/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/03/24/JavaConcurrency/AQS源码阅读（三） -- 共享模式/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">AQSԴ���Ķ������� -- ����ģʽ</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CountDownLatch"><span class="toc-number">1.</span> <span class="toc-text">CountDownLatch</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CountDownLatch-int-count-构造函数"><span class="toc-number">1.1.</span> <span class="toc-text">CountDownLatch(int count)构造函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#await"><span class="toc-number">2.</span> <span class="toc-text">await()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#countDown"><span class="toc-number">3.</span> <span class="toc-text">countDown()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CyclicBarrier"><span class="toc-number">4.</span> <span class="toc-text">CyclicBarrier</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#域"><span class="toc-number">4.1.</span> <span class="toc-text">域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#await-1"><span class="toc-number">4.2.</span> <span class="toc-text">await()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reset"><span class="toc-number">4.3.</span> <span class="toc-text">reset()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对比总结"><span class="toc-number">5.</span> <span class="toc-text">对比总结</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
+  
+  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+<script>
+  var cloudTieConfig = {
+    url: "http://yoursite.com/2019/03/24/JavaConcurrency/CountDownLatch与CyclicBarrier 源码解析/", 
+    sourceId: "JavaConcurrency/CountDownLatch与CyclicBarrier 源码解析",
+    productKey: "true",
+    target: "cloud-tie-wrapper"
+  };
+</script>
+<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -231,9 +364,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
